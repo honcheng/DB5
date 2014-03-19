@@ -240,6 +240,17 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
+- (BOOL)hasKey:(NSString *)key
+{
+	id obj = [self objectForKey:key];
+
+	if (obj == nil)
+		return NO;
+	
+	return YES;
+}
+
+
 - (void)clearFontCache
 {
 	[self.fontCache removeAllObjects];

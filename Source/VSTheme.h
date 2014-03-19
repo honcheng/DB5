@@ -43,6 +43,8 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 - (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key; /*lowercase or uppercase -- returns VSTextCaseTransformNone*/
 
+- (BOOL)hasKey:(NSString *)key; /* YES if key exists */
+
 - (void)clearFontCache;
 - (void)clearColorCache;
 
