@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 - (UIColor *)colorForKey:(NSString *)key; /*123ABC or #123ABC: 6 digits, leading # allowed but not required*/
 - (UIEdgeInsets)edgeInsetsForKey:(NSString *)key; /*xTop, xLeft, xRight, xBottom keys*/
 - (UIFont *)fontForKey:(NSString *)key; /*x and xSize keys*/
+- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment; /*x and xSize keys. Provide a positive or negative value to adjust the size from what is provided */
 - (CGPoint)pointForKey:(NSString *)key; /*xX and xY keys*/
 - (CGSize)sizeForKey:(NSString *)key; /*xWidth and xHeight keys*/
 - (NSTimeInterval)timeIntervalForKey:(NSString *)key;
@@ -41,6 +42,9 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 - (VSAnimationSpecifier *)animationSpecifierForKey:(NSString *)key; /*xDuration, xDelay, xCurve*/
 
 - (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key; /*lowercase or uppercase -- returns VSTextCaseTransformNone*/
+
+- (void)clearFontCache;
+- (void)clearColorCache;
 
 @end
 

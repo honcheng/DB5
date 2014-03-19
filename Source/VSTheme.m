@@ -140,32 +140,38 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 
 - (UIFont *)fontForKey:(NSString *)key {
+	return [self fontForKey:key sizeAdjustment:0];
+}
 
+- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment
+{
 	UIFont *cachedFont = [self.fontCache objectForKey:key];
 	if (cachedFont != nil)
 		return cachedFont;
     
 	NSString *fontName = [self stringForKey:key];
 	CGFloat fontSize = [self floatForKey:[key stringByAppendingString:@"Size"]];
-
+	
+	fontSize += sizeAdjustment;
+	
 	if (fontSize < 1.0f)
 		fontSize = 15.0f;
-
+	
 	UIFont *font = nil;
     
 	if (stringIsEmpty(fontName))
 		font = [UIFont systemFontOfSize:fontSize];
 	else
 		font = [UIFont fontWithName:fontName size:fontSize];
-
+	
 	if (font == nil)
 		font = [UIFont systemFontOfSize:fontSize];
     
 	[self.fontCache setObject:font forKey:key];
-
+	
 	return font;
+	
 }
-
 
 - (CGPoint)pointForKey:(NSString *)key {
 
@@ -233,6 +239,17 @@ static UIColor *colorWithHexString(NSString *hexString);
 	return VSTextCaseTransformNone;
 }
 
+
+- (void)clearFontCache
+{
+	[self.fontCache removeAllObjects];
+}
+
+
+- (void)clearColorCache
+{
+	[self.colorCache removeAllObjects];
+}
 
 @end
 
