@@ -29,21 +29,40 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 - (NSString *)stringForKey:(NSString *)key;
 - (NSInteger)integerForKey:(NSString *)key;
 - (CGFloat)floatForKey:(NSString *)key;
-- (UIImage *)imageForKey:(NSString *)key; /*Via UIImage imageNamed:*/
-- (UIColor *)colorForKey:(NSString *)key; /*123ABC or #123ABC: 6 digits, leading # allowed but not required*/
-- (UIEdgeInsets)edgeInsetsForKey:(NSString *)key; /*xTop, xLeft, xRight, xBottom keys*/
-- (UIFont *)fontForKey:(NSString *)key; /*x and xSize keys*/
-- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment; /*x and xSize keys. Provide a positive or negative value to adjust the size from what is provided */
-- (CGPoint)pointForKey:(NSString *)key; /*xX and xY keys*/
-- (CGSize)sizeForKey:(NSString *)key; /*xWidth and xHeight keys*/
 - (NSTimeInterval)timeIntervalForKey:(NSString *)key;
 
-- (UIViewAnimationOptions)curveForKey:(NSString *)key; /*Possible values: easeinout, easeout, easein, linear*/
-- (VSAnimationSpecifier *)animationSpecifierForKey:(NSString *)key; /*xDuration, xDelay, xCurve*/
+/** Via \c +UIImage imageNamed: */
+- (UIImage *)imageForKey:(NSString *)key;
 
-- (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key; /*lowercase or uppercase -- returns VSTextCaseTransformNone*/
+/** Dictionary with hex key containing 123ABC or #123ABC: 6 digits, leading # allowed but not required, and optional alpha key containing number 0-1 */
+- (UIColor *)colorForKey:(NSString *)key;
 
-- (BOOL)hasKey:(NSString *)key; /* YES if key exists */
+/** Dictionary with top, left, right, bottoms keys */
+- (UIEdgeInsets)edgeInsetsForKey:(NSString *)key;
+
+/** Dictionary with name key containing the fully specified name fo the font, and size key containing size of the font in points */
+- (UIFont *)fontForKey:(NSString *)key;
+
+/** Dictionary with name key containing the fully specified name fo the font, and size key containing size of the font in points. Optionally make adjustment to the size of the font by providing a positive or negative value in sizeAdjustment */
+- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment;
+
+/** Dictionary with x and y keys */
+- (CGPoint)pointForKey:(NSString *)key;
+
+/** Dictionary with width and height keys */
+- (CGSize)sizeForKey:(NSString *)key;
+
+/** Dictionary containing the keys duration, delay and curve, where the possible values for curve are easeinout, easeout, easein, linear */
+- (VSAnimationSpecifier *)animationSpecifierForKey:(NSString *)key;
+
+/** lowercase or uppercase -- returns VSTextCaseTransformNone */
+- (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key;
+
+/** Returns YES only if the theme explicitly provides the key */
+- (BOOL)containsKey:(NSString *)key;
+
+/** Returns YES if either the theme or the parent provides the key */
+- (BOOL)containsOrInheritsKey:(NSString *)key;
 
 - (void)clearFontCache;
 - (void)clearColorCache;

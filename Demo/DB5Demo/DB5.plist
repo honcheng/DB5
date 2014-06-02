@@ -5,23 +5,40 @@
 	<key>Default</key>
 	<dict>
 		<key>backgroundColor</key>
-		<string>708090</string>
+		<dict>
+			<key>hex</key>
+			<string>708090</string>
+		</dict>
 		<key>labelTextColor</key>
-		<string>ececec</string>
+		<dict>
+			<key>hex</key>
+			<string>ececec</string>
+			<key>alpha</key>
+			<real>0.5</real>
+		</dict>
 		<key>labelFont</key>
-		<string>Avenir-Medium</string>
-		<key>labelFontSize</key>
-		<integer>18</integer>
-		<key>labelX</key>
-		<integer>44</integer>
-		<key>labelY</key>
-		<integer>300</integer>
-		<key>labelAnimationDuration</key>
-		<real>0.25</real>
-		<key>labelAnimationDelay</key>
-		<real>2</real>
-		<key>labelAnimationCurve</key>
-		<string>easeout</string>
+		<dict>
+			<key>name</key>
+			<string>Avenir-Medium</string>
+			<key>size</key>
+			<integer>18</integer>
+		</dict>
+		<key>labelPosition</key>
+		<dict>
+			<key>x</key>
+			<integer>44</integer>
+			<key>y</key>
+			<integer>300</integer>
+		</dict>
+		<key>labelAnimation</key>
+		<dict>
+			<key>duration</key>
+			<real>0.25</real>
+			<key>delay</key>
+			<real>2</real>
+			<key>curve</key>
+			<string>easeout</string>
+		</dict>
 	</dict>
 	<key>Example Theme</key>
 	<dict>

@@ -42,7 +42,7 @@
 	[self.theme animateWithAnimationSpecifierKey:@"labelAnimation" animations:^{
 
 		CGRect rLabel = self.label.frame;
-		rLabel.origin = [self.theme pointForKey:@"label"];
+		rLabel.origin = [self.theme pointForKey:@"labelPosition"];
 
 		self.label.frame = rLabel;
 		

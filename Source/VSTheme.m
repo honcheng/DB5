@@ -51,9 +51,33 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
+- (NSDictionary *)dictionaryForKey:(NSString *)key {
+	
+	id obj = [self objectForKey:key];
+	if (obj == nil)
+		return nil;
+	if ([obj isKindOfClass:[NSDictionary class]])
+		return obj;
+	return nil;
+}
+
+
+/**
+ 
+ Basic Data Types
+ 
+ */
+
+
 - (BOOL)boolForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
+	return [self boolForObject:obj];
+}
+
+
+- (BOOL)boolForObject:(id)obj {
+	
 	if (obj == nil)
 		return NO;
 	return [obj boolValue];
@@ -63,6 +87,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSString *)stringForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
+	return [self stringFromObject:obj];
+}
+
+
+- (NSString *)stringFromObject:(id)obj {
 	if (obj == nil)
 		return nil;
 	if ([obj isKindOfClass:[NSString class]])
@@ -76,6 +105,12 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSInteger)integerForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
+	return [self integerFromObject:obj];
+}
+
+
+- (NSInteger)integerFromObject:(id)obj {
+	
 	if (obj == nil)
 		return 0;
 	return [obj integerValue];
@@ -85,6 +120,12 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (CGFloat)floatForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
+	return [self floatFromObject:obj];
+}
+
+
+- (CGFloat)floatFromObject:(id)obj {
+	
 	if (obj == nil)
 		return  0.0f;
 	return [obj floatValue];
@@ -94,10 +135,23 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSTimeInterval)timeIntervalForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
+	return [self timeIntervalFromObject:obj];
+}
+
+
+- (NSTimeInterval)timeIntervalFromObject:(id)obj {
+	
 	if (obj == nil)
 		return 0.0;
 	return [obj doubleValue];
 }
+
+
+/**
+ 
+ Advanced Data Types
+ 
+ */
 
 
 - (UIImage *)imageForKey:(NSString *)key {
@@ -116,8 +170,22 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (cachedColor != nil)
 		return cachedColor;
     
-	NSString *colorString = [self stringForKey:key];
-	UIColor *color = colorWithHexString(colorString);
+	NSDictionary *colorDictionary = [self dictionaryForKey:key];
+	UIColor *color = nil;
+	
+	if (colorDictionary) {
+		NSString *hexString = [self stringFromObject:colorDictionary[@"hex"]];
+		
+		if (hexString) {
+			color = colorWithHexString(hexString);
+			
+			if (colorDictionary[@"alpha"] != nil) {
+				CGFloat alpha = [self floatFromObject:colorDictionary[@"alpha"]];
+				color = [color colorWithAlphaComponent:alpha];
+			}
+		}
+	}
+	
 	if (color == nil)
 		color = [UIColor blackColor];
 
@@ -129,10 +197,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 - (UIEdgeInsets)edgeInsetsForKey:(NSString *)key {
 
-	CGFloat left = [self floatForKey:[key stringByAppendingString:@"Left"]];
-	CGFloat top = [self floatForKey:[key stringByAppendingString:@"Top"]];
-	CGFloat right = [self floatForKey:[key stringByAppendingString:@"Right"]];
-	CGFloat bottom = [self floatForKey:[key stringByAppendingString:@"Bottom"]];
+	NSDictionary *insetsDictionary = [self dictionaryForKey:key];
+	CGFloat left = [self floatFromObject:insetsDictionary[@"left"]];
+	CGFloat top = [self floatFromObject:insetsDictionary[@"top"]];
+	CGFloat right = [self floatFromObject:insetsDictionary[@"right"]];
+	CGFloat bottom = [self floatFromObject:insetsDictionary[@"bottom"]];
 
 	UIEdgeInsets edgeInsets = UIEdgeInsetsMake(top, left, bottom, right);
 	return edgeInsets;
@@ -140,17 +209,20 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 
 - (UIFont *)fontForKey:(NSString *)key {
+	
 	return [self fontForKey:key sizeAdjustment:0];
 }
 
-- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment
-{
+
+- (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment {
+	
 	UIFont *cachedFont = [self.fontCache objectForKey:key];
 	if (cachedFont != nil)
 		return cachedFont;
     
-	NSString *fontName = [self stringForKey:key];
-	CGFloat fontSize = [self floatForKey:[key stringByAppendingString:@"Size"]];
+	NSDictionary *fontDictionary = [self dictionaryForKey:key];
+	NSString *fontName = [self stringFromObject:fontDictionary[@"name"]];
+	CGFloat fontSize = [self floatFromObject:fontDictionary[@"size"]];
 	
 	fontSize += sizeAdjustment;
 	
@@ -173,10 +245,12 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 }
 
+
 - (CGPoint)pointForKey:(NSString *)key {
 
-	CGFloat pointX = [self floatForKey:[key stringByAppendingString:@"X"]];
-	CGFloat pointY = [self floatForKey:[key stringByAppendingString:@"Y"]];
+	NSDictionary *pointDictionary = [self dictionaryForKey:key];
+	CGFloat pointX = [self floatFromObject:pointDictionary[@"x"]];
+	CGFloat pointY = [self floatFromObject:pointDictionary[@"y"]];
 
 	CGPoint point = CGPointMake(pointX, pointY);
 	return point;
@@ -185,17 +259,18 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 - (CGSize)sizeForKey:(NSString *)key {
 
-	CGFloat width = [self floatForKey:[key stringByAppendingString:@"Width"]];
-	CGFloat height = [self floatForKey:[key stringByAppendingString:@"Height"]];
-
+	NSDictionary *sizeDictionary = [self dictionaryForKey:key];
+	CGFloat width = [self floatFromObject:sizeDictionary[@"width"]];
+	CGFloat height = [self floatFromObject:sizeDictionary[@"height"]];
+	
 	CGSize size = CGSizeMake(width, height);
 	return size;
 }
 
 
-- (UIViewAnimationOptions)curveForKey:(NSString *)key {
+- (UIViewAnimationOptions)curveFromObject:(id)obj {
     
-	NSString *curveString = [self stringForKey:key];
+	NSString *curveString = [self stringFromObject:obj];
 	if (stringIsEmpty(curveString))
 		return UIViewAnimationOptionCurveEaseInOut;
 
@@ -217,9 +292,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 	VSAnimationSpecifier *animationSpecifier = [VSAnimationSpecifier new];
 
-	animationSpecifier.duration = [self timeIntervalForKey:[key stringByAppendingString:@"Duration"]];
-	animationSpecifier.delay = [self timeIntervalForKey:[key stringByAppendingString:@"Delay"]];
-	animationSpecifier.curve = [self curveForKey:[key stringByAppendingString:@"Curve"]];
+	NSDictionary *animationDictionary = [self dictionaryForKey:key];
+	
+	animationSpecifier.duration = [self timeIntervalFromObject:animationDictionary[@"duration"]];
+	animationSpecifier.delay = [self timeIntervalFromObject:animationDictionary[@"delay"]];
+	animationSpecifier.curve = [self curveFromObject:animationDictionary[@"delay"]];
 
 	return animationSpecifier;
 }
@@ -240,10 +317,21 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
-- (BOOL)hasKey:(NSString *)key
-{
-	id obj = [self objectForKey:key];
+- (BOOL)containsKey:(NSString *)key {
+	
+	id obj = [self.themeDictionary valueForKeyPath:key];
 
+	if (obj == nil)
+		return NO;
+	
+	return YES;
+}
+
+
+- (BOOL)containsOrInheritsKey:(NSString *)key {
+	
+	id obj = [self objectForKey:key];
+	
 	if (obj == nil)
 		return NO;
 	
