@@ -12,7 +12,6 @@
 
 @interface DB5ViewController ()
 
-@property (strong, nonatomic) IBOutlet UILabel *label;
 @property (nonatomic, strong) VSTheme *theme;
 
 @end
@@ -36,15 +35,19 @@
 - (void)viewDidLoad {
 
 	self.view.backgroundColor = [self.theme colorForKey:@"backgroundColor"];
-	self.label.textColor = [self.theme colorForKey:@"labelTextColor"];
-	self.label.font = [self.theme fontForKey:@"labelFont"];
-
+	
+	UIView *square = [self.theme viewWithViewSpecifierKey:@"square"];
+	[self.view addSubview:square];
+	
+	UILabel *label = [self.theme labelWithText:@"DB5 Demo App" specifierKey:@"label" sizeAdjustment:0];
+	[self.view addSubview:label];
+	
 	[self.theme animateWithAnimationSpecifierKey:@"labelAnimation" animations:^{
 
-		CGRect rLabel = self.label.frame;
-		rLabel.origin = [self.theme pointForKey:@"labelPosition"];
+		CGRect rLabel = label.frame;
+		rLabel.origin = [self.theme pointForKey:@"labelFinalPosition"];
 
-		self.label.frame = rLabel;
+		label.frame = rLabel;
 		
 	} completion:^(BOOL finished) {
 		NSLog(@"Ran an animation.");

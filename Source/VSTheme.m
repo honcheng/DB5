@@ -18,7 +18,8 @@ static UIColor *colorWithHexString(NSString *hexString);
 @property (nonatomic, strong) NSDictionary *themeDictionary;
 @property (nonatomic, strong) NSCache *colorCache;
 @property (nonatomic, strong) NSCache *fontCache;
-
+@property (nonatomic, strong) NSCache *viewSpecifierCache;
+@property (nonatomic, strong) NSCache *textLabelSpecifierCache;
 @end
 
 
@@ -35,11 +36,61 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	_themeDictionary = themeDictionary;
 
-	_colorCache = [NSCache new];
-	_fontCache = [NSCache new];
-
 	return self;
 }
+
+/**
+ 
+ Lazy accessors for Cache
+ 
+ */
+
+#pragma mark - Lazy Accessors for Cache
+
+
+- (NSCache *)colorCache {
+	
+	if (!_colorCache)
+		_colorCache = [NSCache new];
+	
+	return _colorCache;
+}
+
+
+- (NSCache *)fontCache {
+	
+	if (!_fontCache)
+		_fontCache = [NSCache new];
+	
+	return _fontCache;
+}
+
+
+- (NSCache *)viewSpecifierCache {
+	
+	if (!_viewSpecifierCache)
+		_viewSpecifierCache = [NSCache new];
+	
+	return _viewSpecifierCache;
+}
+
+
+- (NSCache *)textLabelSpecifierCache {
+	
+	if (!_textLabelSpecifierCache)
+		_textLabelSpecifierCache = [NSCache new];
+	
+	return _textLabelSpecifierCache;
+}
+
+
+/**
+ 
+ Basic Methods To Obtain Data From Plist
+ 
+ */
+
+#pragma mark - Basic Methods To Obtain Data From Plist
 
 
 - (id)objectForKey:(NSString *)key {
@@ -54,6 +105,12 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSDictionary *)dictionaryForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
+	return [self dictionaryFromObject:obj];
+}
+
+
+- (NSDictionary *)dictionaryFromObject:(id)obj {
+	
 	if (obj == nil)
 		return nil;
 	if ([obj isKindOfClass:[NSDictionary class]])
@@ -68,15 +125,17 @@ static UIColor *colorWithHexString(NSString *hexString);
  
  */
 
+#pragma mark - Basic Data Types
+
 
 - (BOOL)boolForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
-	return [self boolForObject:obj];
+	return [self vs_boolForObject:obj];
 }
 
 
-- (BOOL)boolForObject:(id)obj {
+- (BOOL)vs_boolForObject:(id)obj {
 	
 	if (obj == nil)
 		return NO;
@@ -87,11 +146,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSString *)stringForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
-	return [self stringFromObject:obj];
+	return [self vs_stringFromObject:obj];
 }
 
 
-- (NSString *)stringFromObject:(id)obj {
+- (NSString *)vs_stringFromObject:(id)obj {
 	if (obj == nil)
 		return nil;
 	if ([obj isKindOfClass:[NSString class]])
@@ -105,11 +164,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSInteger)integerForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
-	return [self integerFromObject:obj];
+	return [self vs_integerFromObject:obj];
 }
 
 
-- (NSInteger)integerFromObject:(id)obj {
+- (NSInteger)vs_integerFromObject:(id)obj {
 	
 	if (obj == nil)
 		return 0;
@@ -120,11 +179,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (CGFloat)floatForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
-	return [self floatFromObject:obj];
+	return [self vs_floatFromObject:obj];
 }
 
 
-- (CGFloat)floatFromObject:(id)obj {
+- (CGFloat)vs_floatFromObject:(id)obj {
 	
 	if (obj == nil)
 		return  0.0f;
@@ -135,11 +194,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (NSTimeInterval)timeIntervalForKey:(NSString *)key {
 
 	id obj = [self objectForKey:key];
-	return [self timeIntervalFromObject:obj];
+	return [self vs_timeIntervalFromObject:obj];
 }
 
 
-- (NSTimeInterval)timeIntervalFromObject:(id)obj {
+- (NSTimeInterval)vs_timeIntervalFromObject:(id)obj {
 	
 	if (obj == nil)
 		return 0.0;
@@ -152,6 +211,8 @@ static UIColor *colorWithHexString(NSString *hexString);
  Advanced Data Types
  
  */
+
+#pragma mark - Advanced Data Types
 
 
 - (UIImage *)imageForKey:(NSString *)key {
@@ -171,16 +232,26 @@ static UIColor *colorWithHexString(NSString *hexString);
 		return cachedColor;
     
 	NSDictionary *colorDictionary = [self dictionaryForKey:key];
+	UIColor *color = [self vs_colorFromDictionary:colorDictionary];
+	
+	[self.colorCache setObject:color forKey:key];
+
+	return color;
+}
+
+
+- (UIColor *)vs_colorFromDictionary:(NSDictionary *)colorDictionary {
+	
 	UIColor *color = nil;
 	
 	if (colorDictionary) {
-		NSString *hexString = [self stringFromObject:colorDictionary[@"hex"]];
+		NSString *hexString = [self vs_stringFromObject:colorDictionary[@"hex"]];
 		
 		if (hexString) {
 			color = colorWithHexString(hexString);
 			
 			if (colorDictionary[@"alpha"] != nil) {
-				CGFloat alpha = [self floatFromObject:colorDictionary[@"alpha"]];
+				CGFloat alpha = [self vs_floatFromObject:colorDictionary[@"alpha"]];
 				color = [color colorWithAlphaComponent:alpha];
 			}
 		}
@@ -188,9 +259,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	if (color == nil)
 		color = [UIColor blackColor];
-
-	[self.colorCache setObject:color forKey:key];
-
+	
 	return color;
 }
 
@@ -198,11 +267,18 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (UIEdgeInsets)edgeInsetsForKey:(NSString *)key {
 
 	NSDictionary *insetsDictionary = [self dictionaryForKey:key];
-	CGFloat left = [self floatFromObject:insetsDictionary[@"left"]];
-	CGFloat top = [self floatFromObject:insetsDictionary[@"top"]];
-	CGFloat right = [self floatFromObject:insetsDictionary[@"right"]];
-	CGFloat bottom = [self floatFromObject:insetsDictionary[@"bottom"]];
+	UIEdgeInsets edgeInsets = [self vs_edgeInsetsFromDictionary:insetsDictionary];
+	return edgeInsets;
+}
 
+
+- (UIEdgeInsets)vs_edgeInsetsFromDictionary:(NSDictionary *)insetsDictionary {
+	
+	CGFloat left = [self vs_floatFromObject:insetsDictionary[@"left"]];
+	CGFloat top = [self vs_floatFromObject:insetsDictionary[@"top"]];
+	CGFloat right = [self vs_floatFromObject:insetsDictionary[@"right"]];
+	CGFloat bottom = [self vs_floatFromObject:insetsDictionary[@"bottom"]];
+	
 	UIEdgeInsets edgeInsets = UIEdgeInsetsMake(top, left, bottom, right);
 	return edgeInsets;
 }
@@ -216,13 +292,24 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 - (UIFont *)fontForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment {
 	
-	UIFont *cachedFont = [self.fontCache objectForKey:key];
+	NSString *cacheKey = [key stringByAppendingFormat:@"_%.2f", sizeAdjustment];
+	UIFont *cachedFont = [self.fontCache objectForKey:cacheKey];
 	if (cachedFont != nil)
 		return cachedFont;
     
 	NSDictionary *fontDictionary = [self dictionaryForKey:key];
-	NSString *fontName = [self stringFromObject:fontDictionary[@"name"]];
-	CGFloat fontSize = [self floatFromObject:fontDictionary[@"size"]];
+	UIFont *font = [self vs_fontFromDictionary:fontDictionary sizeAdjustment:sizeAdjustment];
+    
+	[self.fontCache setObject:font forKey:cacheKey];
+	
+	return font;
+}
+
+
+- (UIFont *)vs_fontFromDictionary:(NSDictionary *)fontDictionary sizeAdjustment:(CGFloat)sizeAdjustment {
+	
+	NSString *fontName = [self vs_stringFromObject:fontDictionary[@"name"]];
+	CGFloat fontSize = [self vs_floatFromObject:fontDictionary[@"size"]];
 	
 	fontSize += sizeAdjustment;
 	
@@ -239,19 +326,22 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (font == nil)
 		font = [UIFont systemFontOfSize:fontSize];
     
-	[self.fontCache setObject:font forKey:key];
-	
 	return font;
-	
 }
 
 
 - (CGPoint)pointForKey:(NSString *)key {
 
 	NSDictionary *pointDictionary = [self dictionaryForKey:key];
-	CGFloat pointX = [self floatFromObject:pointDictionary[@"x"]];
-	CGFloat pointY = [self floatFromObject:pointDictionary[@"y"]];
+	return [self vs_pointFromDictionary:pointDictionary];
+}
 
+
+- (CGPoint)vs_pointFromDictionary:(NSDictionary *)pointDictionary {
+	
+	CGFloat pointX = [self vs_floatFromObject:pointDictionary[@"x"]];
+	CGFloat pointY = [self vs_floatFromObject:pointDictionary[@"y"]];
+	
 	CGPoint point = CGPointMake(pointX, pointY);
 	return point;
 }
@@ -260,17 +350,23 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (CGSize)sizeForKey:(NSString *)key {
 
 	NSDictionary *sizeDictionary = [self dictionaryForKey:key];
-	CGFloat width = [self floatFromObject:sizeDictionary[@"width"]];
-	CGFloat height = [self floatFromObject:sizeDictionary[@"height"]];
+	return [self vs_sizeFromDictionary:sizeDictionary];
+}
+
+
+- (CGSize)vs_sizeFromDictionary:(NSDictionary *)sizeDictionary {
+	
+	CGFloat width = [self vs_floatFromObject:sizeDictionary[@"width"]];
+	CGFloat height = [self vs_floatFromObject:sizeDictionary[@"height"]];
 	
 	CGSize size = CGSizeMake(width, height);
 	return size;
 }
 
 
-- (UIViewAnimationOptions)curveFromObject:(id)obj {
+- (UIViewAnimationOptions)vs_curveFromObject:(id)obj {
     
-	NSString *curveString = [self stringFromObject:obj];
+	NSString *curveString = [self vs_stringFromObject:obj];
 	if (stringIsEmpty(curveString))
 		return UIViewAnimationOptionCurveEaseInOut;
 
@@ -294,9 +390,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 	NSDictionary *animationDictionary = [self dictionaryForKey:key];
 	
-	animationSpecifier.duration = [self timeIntervalFromObject:animationDictionary[@"duration"]];
-	animationSpecifier.delay = [self timeIntervalFromObject:animationDictionary[@"delay"]];
-	animationSpecifier.curve = [self curveFromObject:animationDictionary[@"delay"]];
+	animationSpecifier.duration = [self vs_timeIntervalFromObject:animationDictionary[@"duration"]];
+	animationSpecifier.delay = [self vs_timeIntervalFromObject:animationDictionary[@"delay"]];
+	animationSpecifier.curve = [self vs_curveFromObject:animationDictionary[@"delay"]];
 
 	return animationSpecifier;
 }
@@ -315,6 +411,114 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 	return VSTextCaseTransformNone;
 }
+
+
+- (VSViewSpecifier *)viewSpecifierForKey:(NSString *)key {
+	
+	VSViewSpecifier *cachedSpecifier = [self.viewSpecifierCache objectForKey:key];
+	if (cachedSpecifier != nil)
+		return cachedSpecifier;
+	
+	VSViewSpecifier *viewSpecifier = [VSViewSpecifier new];
+	NSDictionary *dictionary = [self dictionaryForKey:key];
+
+	NSDictionary *sizeDictionary = [self dictionaryFromObject:dictionary[@"size"]];
+	viewSpecifier.size = [self vs_sizeFromDictionary:sizeDictionary];
+
+	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
+	viewSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
+
+	NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
+	viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
+	
+	[self.viewSpecifierCache setObject:viewSpecifier forKey:key];
+	
+	return viewSpecifier;
+}
+
+
+- (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key {
+	
+	return [self textLabelSpecifierForKey:key sizeAdjustment:0];
+}
+
+
+- (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment {
+	
+	NSString *cacheKey = [key stringByAppendingFormat:@"_%.2f", sizeAdjustment];
+	VSTextLabelSpecifier *cachedSpecifier = [self.textLabelSpecifierCache objectForKey:cacheKey];
+	if (cachedSpecifier != nil)
+		return cachedSpecifier;
+	
+	VSTextLabelSpecifier *labelSpecifier = [VSTextLabelSpecifier new];
+	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	NSDictionary *fontDictionary = [self dictionaryFromObject:dictionary[@"font"]];
+	labelSpecifier.font = [self vs_fontFromDictionary:fontDictionary sizeAdjustment:sizeAdjustment];
+	
+	NSDictionary *sizeDictionary = [self dictionaryFromObject:dictionary[@"size"]];
+	labelSpecifier.size = [self vs_sizeFromDictionary:sizeDictionary];
+	
+	labelSpecifier.sizeToFit = [self vs_boolForObject:dictionary[@"sizeToFit"]];
+
+	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
+	labelSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
+
+	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
+	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
+
+	if (dictionary[@"color"]) {
+		NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
+		labelSpecifier.color = [self vs_colorFromDictionary:colorDictionary];
+	}
+
+	if (dictionary[@"backgroundColor"]) {
+		NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
+		labelSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
+	}
+	
+	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
+	
+	return labelSpecifier;
+}
+
+
+- (NSTextAlignment)textAlignmentForKey:(NSString *)key {
+	
+	id obj = [self objectForKey:key];
+	return [self vs_textAlignmentFromObject:obj];
+}
+
+
+- (NSTextAlignment)vs_textAlignmentFromObject:(id)obj {
+    
+	NSString *alignmentString = [self vs_stringFromObject:obj];
+	
+	if (!stringIsEmpty(alignmentString)) {
+		alignmentString = [alignmentString lowercaseString];
+		if ([alignmentString isEqualToString:@"left"])
+			return NSTextAlignmentLeft;
+		else if ([alignmentString isEqualToString:@"center"])
+			return NSTextAlignmentCenter;
+		else if ([alignmentString isEqualToString:@"right"])
+			return NSTextAlignmentRight;
+		else if ([alignmentString isEqualToString:@"justified"])
+			return NSTextAlignmentJustified;
+		else if ([alignmentString isEqualToString:@"natural"])
+			return NSTextAlignmentNatural;
+	}
+    
+	return NSTextAlignmentLeft;
+}
+
+
+/**
+ 
+ Other Public Helper Methods
+ 
+ */
+
+#pragma mark - Other Public Helper Methods
 
 
 - (BOOL)containsKey:(NSString *)key {
@@ -350,6 +554,18 @@ static UIColor *colorWithHexString(NSString *hexString);
 	[self.colorCache removeAllObjects];
 }
 
+
+- (void)clearViewSpecifierCache
+{
+	[self.viewSpecifierCache removeAllObjects];
+}
+
+
+- (void)clearTextLabelSpecifierCache
+{
+	[self.textLabelSpecifierCache removeAllObjects];
+}
+
 @end
 
 
@@ -363,12 +579,79 @@ static UIColor *colorWithHexString(NSString *hexString);
     [UIView animateWithDuration:animationSpecifier.duration delay:animationSpecifier.delay options:animationSpecifier.curve animations:animations completion:completion];
 }
 
+
+@end
+
+
+@implementation VSTheme (Labels)
+
+
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)labelSpecifierKey {
+	
+	return [self labelWithText:text specifierKey:labelSpecifierKey sizeAdjustment:0];
+}
+
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)labelSpecifierKey sizeAdjustment:(CGFloat)sizeAdjustment {
+	
+	VSTextLabelSpecifier *textLabelSpecifier = [self textLabelSpecifierForKey:labelSpecifierKey sizeAdjustment:sizeAdjustment];
+	
+	CGRect frame;
+	frame.size = textLabelSpecifier.size;
+	frame.origin = textLabelSpecifier.position;
+	
+	UILabel *label = [[UILabel alloc] initWithFrame:frame];
+	label.text = text;
+
+	label.font = textLabelSpecifier.font;
+	label.textAlignment = textLabelSpecifier.alignment;
+	
+	if (textLabelSpecifier.color)
+		label.textColor = textLabelSpecifier.color;
+	
+	if (textLabelSpecifier.backgroundColor)
+		label.backgroundColor = textLabelSpecifier.backgroundColor;
+
+	if (textLabelSpecifier.sizeToFit)
+		[label sizeToFit];
+	
+	return label;
+}
+
+
+@end
+
+
+@implementation VSTheme (View)
+
+- (UIView *)viewWithViewSpecifierKey:(NSString *)viewSpecifierKey {
+	
+	VSViewSpecifier *viewSpecifier = [self viewSpecifierForKey:viewSpecifierKey];
+	
+	CGRect frame;
+	frame.size = viewSpecifier.size;
+	frame.origin = viewSpecifier.position;
+	
+	UIView *view = [[UIView alloc] initWithFrame:frame];
+	
+	view.backgroundColor = viewSpecifier.backgroundColor;
+	
+	return view;
+}
+
 @end
 
 
 #pragma mark -
 
 @implementation VSAnimationSpecifier
+
+@end
+
+@implementation VSViewSpecifier
+
+@end
+
+@implementation VSTextLabelSpecifier
 
 @end
 

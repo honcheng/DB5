@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 };
 
 
-@class VSAnimationSpecifier;
+@class VSAnimationSpecifier, VSViewSpecifier, VSTextLabelSpecifier;
 
 @interface VSTheme : NSObject
 
@@ -58,6 +58,16 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** lowercase or uppercase -- returns VSTextCaseTransformNone */
 - (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key;
 
+- (VSViewSpecifier *)viewSpecifierForKey:(NSString *)key;
+
+- (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key;
+
+/** Optionally make adjustment to the size of the font by providing a positive or negative value in sizeAdjustment */
+- (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment;
+
+/** Where the possible values for curve are left, center, right, justified, natural */
+- (NSTextAlignment)textAlignmentForKey:(NSString *)key;
+
 /** Returns YES only if the theme explicitly provides the key */
 - (BOOL)containsKey:(NSString *)key;
 
@@ -66,6 +76,8 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 - (void)clearFontCache;
 - (void)clearColorCache;
+- (void)clearViewSpecifierCache;
+- (void)clearTextLabelSpecifierCache;
 
 @end
 
@@ -73,6 +85,22 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @interface VSTheme (Animations)
 
 - (void)animateWithAnimationSpecifierKey:(NSString *)animationSpecifierKey animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion;
+
+@end
+
+
+@interface VSTheme (Labels)
+
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)animationSpecifierKey;
+
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)animationSpecifierKey sizeAdjustment:(CGFloat)sizeAdjustment;
+
+@end
+
+
+@interface VSTheme (View)
+
+- (UIView *)viewWithViewSpecifierKey:(NSString *)viewSpecifierKey;
 
 @end
 
@@ -85,3 +113,23 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 @end
 
+@interface VSViewSpecifier : NSObject
+
+@property (nonatomic, assign) CGSize size;
+@property (nonatomic, assign) CGPoint position;
+@property (nonatomic, copy) UIColor *backgroundColor;
+
+@end
+
+@interface VSTextLabelSpecifier : NSObject
+
+@property (nonatomic, assign) UIFont *font;
+@property (nonatomic, assign) CGSize size;
+/** If YES, \c size should be ignored when creating a text label from it */
+@property (nonatomic, assign) BOOL sizeToFit;
+@property (nonatomic, assign) CGPoint position;
+@property (nonatomic, assign) NSTextAlignment alignment;
+@property (nonatomic, copy) UIColor *color;
+@property (nonatomic, copy) UIColor *backgroundColor;
+
+@end
