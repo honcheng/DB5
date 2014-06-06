@@ -429,7 +429,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 	viewSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
 
 	NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
-	viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
+	if (backgroundColorDictionary)
+		viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
+	
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
+	viewSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
 	[self.viewSpecifierCache setObject:viewSpecifier forKey:key];
 	
@@ -464,21 +468,19 @@ static UIColor *colorWithHexString(NSString *hexString);
 	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
 	labelSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
 
-	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
-	labelSpecifier.edgeInsets = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
-	
 	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
 	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
 
-	if (dictionary[@"color"]) {
-		NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
+	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
+	if (colorDictionary)
 		labelSpecifier.color = [self vs_colorFromDictionary:colorDictionary];
-	}
 
-	if (dictionary[@"backgroundColor"]) {
-		NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
+	NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
+	if (backgroundColorDictionary)
 		labelSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
-	}
+	
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
+	labelSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
 	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
 	
@@ -614,11 +616,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (textLabelSpecifier.backgroundColor)
 		label.backgroundColor = textLabelSpecifier.backgroundColor;
 
-	if (textLabelSpecifier.sizeToFit)VSTextLabelSpecifier
+	if (textLabelSpecifier.sizeToFit)
+		[label sizeToFit];
 	
 	return label;
 }
-
 
 @end
 

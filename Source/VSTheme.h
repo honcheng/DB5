@@ -119,6 +119,10 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) CGPoint position;
 @property (nonatomic, copy) UIColor *backgroundColor;
 
+/** Not used when creating a view \c -viewWithViewSpecifierKey:. How padding
+ affect the view to be interpreted by interested party. */
+@property (nonatomic, assign) UIEdgeInsets padding;
+
 @end
 
 @interface VSTextLabelSpecifier : NSObject
@@ -128,10 +132,12 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** If YES, \c size should be ignored when creating a text label from it */
 @property (nonatomic, assign) BOOL sizeToFit;
 @property (nonatomic, assign) CGPoint position;
-/** Not used when creating a view \c -viewWithViewSpecifierKey: */
-@property (nonatomic, assign) UIEdgeInsets edgeInsets;
 @property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, copy) UIColor *color;
 @property (nonatomic, copy) UIColor *backgroundColor;
+
+/** Not used when creating a view \c -labelWithText:specifierKey:sizeAdjustment:
+ How padding affect the text label to be interpreted by interested party. */
+@property (nonatomic, assign) UIEdgeInsets padding;
 
 @end
