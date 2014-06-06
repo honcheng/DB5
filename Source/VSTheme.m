@@ -470,6 +470,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
 	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
+	
+	NSDictionary *lineBreakDictionary = [self dictionaryFromObject:dictionary[@"lineBreakMode"]];
+	labelSpecifier.lineBreakMode = [self vs_lineBreakModeFromObject:lineBreakDictionary];
 
 	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
 	if (colorDictionary)
@@ -482,9 +485,37 @@ static UIColor *colorWithHexString(NSString *hexString);
 	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	labelSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
+	// Generate an attributes dictionary that can be used to style an attributed string
+	labelSpecifier.attributes = [self vs_textAttributesTextLabelSpecifier:labelSpecifier];
+	
 	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
 	
 	return labelSpecifier;
+}
+
+
+- (NSDictionary *)vs_textAttributesTextLabelSpecifier:(VSTextLabelSpecifier *)textLabelSpecifier {
+	
+	NSMutableParagraphStyle *paragraphStyle =
+	[[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+	
+	paragraphStyle.lineBreakMode = textLabelSpecifier.lineBreakMode;
+	paragraphStyle.alignment = textLabelSpecifier.alignment;
+	
+	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:3];
+	
+	if (textLabelSpecifier.font)
+		textAttributes[NSFontAttributeName] = textLabelSpecifier.font;
+	
+	if (textLabelSpecifier.color)
+		textAttributes[NSForegroundColorAttributeName] = textLabelSpecifier.color;
+	
+	if (textLabelSpecifier.backgroundColor)
+		textAttributes[NSBackgroundColorAttributeName] = textLabelSpecifier.backgroundColor;
+	
+	textAttributes[NSParagraphStyleAttributeName] = paragraphStyle;
+	
+	return [textAttributes copy];
 }
 
 
@@ -514,6 +545,37 @@ static UIColor *colorWithHexString(NSString *hexString);
 	}
     
 	return NSTextAlignmentLeft;
+}
+
+
+- (NSLineBreakMode)lineBreakModeForKey:(NSString *)key {
+
+	id obj = [self objectForKey:key];
+	return [self vs_lineBreakModeFromObject:obj];
+}
+
+
+- (NSLineBreakMode)vs_lineBreakModeFromObject:(id)obj {
+    
+	NSString *linebreakString = [self vs_stringFromObject:obj];
+	
+	if (!stringIsEmpty(linebreakString)) {
+		linebreakString = [linebreakString lowercaseString];
+		if ([linebreakString isEqualToString:@"wordwrap"])
+			return NSLineBreakByWordWrapping;
+		else if ([linebreakString isEqualToString:@"charwrap"])
+			return NSLineBreakByCharWrapping;
+		else if ([linebreakString isEqualToString:@"clip"])
+			return NSLineBreakByClipping;
+		else if ([linebreakString isEqualToString:@"truncatehead"])
+			return NSLineBreakByTruncatingHead;
+		else if ([linebreakString isEqualToString:@"truncatetail"])
+			return NSLineBreakByTruncatingTail;
+		else if ([linebreakString isEqualToString:@"truncatemiddle"])
+			return NSLineBreakByTruncatingMiddle;
+	}
+    
+	return NSLineBreakByTruncatingTail;
 }
 
 
@@ -571,6 +633,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	[self.textLabelSpecifierCache removeAllObjects];
 }
 
+
 @end
 
 
@@ -595,6 +658,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	return [self labelWithText:text specifierKey:labelSpecifierKey sizeAdjustment:0];
 }
+
 
 - (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)labelSpecifierKey sizeAdjustment:(CGFloat)sizeAdjustment {
 	

@@ -65,8 +65,11 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** Optionally make adjustment to the size of the font by providing a positive or negative value in sizeAdjustment */
 - (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment;
 
-/** Where the possible values for curve are left, center, right, justified, natural */
+/** Where the possible values for text alignment are left, center, right, justified, natural */
 - (NSTextAlignment)textAlignmentForKey:(NSString *)key;
+
+/** Where the possible values for line break mode are wordwrap, charwrap, clip, truncatehead, truncatetail, truncatemiddle */
+- (NSLineBreakMode)lineBreakModeForKey:(NSString *)key;
 
 /** Returns YES only if the theme explicitly provides the key */
 - (BOOL)containsKey:(NSString *)key;
@@ -91,9 +94,9 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 @interface VSTheme (Labels)
 
-- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)animationSpecifierKey;
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)labelSpecifierKey;
 
-- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)animationSpecifierKey sizeAdjustment:(CGFloat)sizeAdjustment;
+- (UILabel *)labelWithText:(NSString *)text specifierKey:(NSString *)labelSpecifierKey sizeAdjustment:(CGFloat)sizeAdjustment;
 
 @end
 
@@ -133,11 +136,15 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) BOOL sizeToFit;
 @property (nonatomic, assign) CGPoint position;
 @property (nonatomic, assign) NSTextAlignment alignment;
+@property (nonatomic, assign) NSLineBreakMode lineBreakMode;
 @property (nonatomic, copy) UIColor *color;
 @property (nonatomic, copy) UIColor *backgroundColor;
 
 /** Not used when creating a view \c -labelWithText:specifierKey:sizeAdjustment:
  How padding affect the text label to be interpreted by interested party. */
 @property (nonatomic, assign) UIEdgeInsets padding;
+
+/** Attributes representing the font, color, backgroundColor, alignment and lineBreakMode */
+@property (nonatomic) NSDictionary *attributes;
 
 @end
