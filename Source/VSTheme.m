@@ -464,6 +464,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
 	labelSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
 
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
+	labelSpecifier.edgeInsets = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
+	
 	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
 	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
 
@@ -611,8 +614,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (textLabelSpecifier.backgroundColor)
 		label.backgroundColor = textLabelSpecifier.backgroundColor;
 
-	if (textLabelSpecifier.sizeToFit)
-		[label sizeToFit];
+	if (textLabelSpecifier.sizeToFit)VSTextLabelSpecifier
 	
 	return label;
 }
