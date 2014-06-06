@@ -135,6 +135,8 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** If YES, \c size should be ignored when creating a text label from it */
 @property (nonatomic, assign) BOOL sizeToFit;
 @property (nonatomic, assign) CGPoint position;
+/** Default: 1 (single line) */
+@property (nonatomic, assign) NSInteger numberOfLines;
 @property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, assign) NSLineBreakMode lineBreakMode;
 @property (nonatomic, copy) UIColor *color;

@@ -467,6 +467,12 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
 	labelSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
+	
+	id numberOfLines = dictionary[@"numberOfLines"];
+	if (numberOfLines)
+		labelSpecifier.numberOfLines = [self vs_integerFromObject:numberOfLines];
+	else
+		labelSpecifier.numberOfLines = 1;
 
 	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
 	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
