@@ -432,7 +432,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (backgroundColorDictionary)
 		viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
 	
-	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	viewSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
 	[self.viewSpecifierCache setObject:viewSpecifier forKey:key];
@@ -479,7 +479,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (backgroundColorDictionary)
 		labelSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
 	
-	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"edgeInsets"]];
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	labelSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
 	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
