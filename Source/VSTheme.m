@@ -432,6 +432,10 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (backgroundColorDictionary)
 		viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
 	
+	NSDictionary *highlightedBackgroundColorDictionary = [self dictionaryFromObject:dictionary[@"highlightedBackgroundColor"]];
+	if (highlightedBackgroundColorDictionary)
+		viewSpecifier.highlightedBackgroundColor = [self vs_colorFromDictionary:highlightedBackgroundColorDictionary];
+
 	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	viewSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
@@ -484,9 +488,17 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (colorDictionary)
 		labelSpecifier.color = [self vs_colorFromDictionary:colorDictionary];
 
+	NSDictionary *highlightedColorDictionary = [self dictionaryFromObject:dictionary[@"highlightedColor"]];
+	if (highlightedColorDictionary)
+		labelSpecifier.highlightedColor = [self vs_colorFromDictionary:highlightedColorDictionary];
+	
 	NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
 	if (backgroundColorDictionary)
 		labelSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
+	
+	NSDictionary *highlightedBackgroundColorDictionary = [self dictionaryFromObject:dictionary[@"highlightedBackgroundColor"]];
+	if (highlightedBackgroundColorDictionary)
+		labelSpecifier.highlightedBackgroundColor = [self vs_colorFromDictionary:highlightedBackgroundColorDictionary];
 	
 	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	labelSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
