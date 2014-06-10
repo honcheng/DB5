@@ -478,11 +478,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 	else
 		labelSpecifier.numberOfLines = 1;
 
-	NSDictionary *alignmentDictionary = [self dictionaryFromObject:dictionary[@"alignment"]];
-	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentDictionary];
+	NSString *alignmentString = [self vs_stringFromObject:dictionary[@"alignment"]];
+	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentString];
 	
-	NSDictionary *lineBreakDictionary = [self dictionaryFromObject:dictionary[@"lineBreakMode"]];
-	labelSpecifier.lineBreakMode = [self vs_lineBreakModeFromObject:lineBreakDictionary];
+	NSString *lineBreakString = [self vs_stringFromObject:dictionary[@"lineBreakMode"]];
+	labelSpecifier.lineBreakMode = [self vs_lineBreakModeFromObject:lineBreakString];
 
 	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
 	if (colorDictionary)
@@ -520,7 +520,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	paragraphStyle.lineBreakMode = textLabelSpecifier.lineBreakMode;
 	paragraphStyle.alignment = textLabelSpecifier.alignment;
 	
-	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:3];
+	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:4];
 	
 	if (textLabelSpecifier.font)
 		textAttributes[NSFontAttributeName] = textLabelSpecifier.font;
