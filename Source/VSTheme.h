@@ -71,6 +71,9 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** Where the possible values for line break mode are wordwrap, charwrap, clip, truncatehead, truncatetail, truncatemiddle */
 - (NSLineBreakMode)lineBreakModeForKey:(NSString *)key;
 
+/** Where the possible values are darkcontent, lightcontent */
+- (UIStatusBarStyle)statusBarStyleForKey:(NSString *)key;
+
 /** Returns YES only if the theme explicitly provides the key */
 - (BOOL)containsKey:(NSString *)key;
 

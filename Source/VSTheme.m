@@ -427,6 +427,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	VSViewSpecifier *viewSpecifier = [VSViewSpecifier new];
 	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	if (!dictionary)
+		return nil;
 
 	NSDictionary *sizeDictionary = [self dictionaryFromObject:dictionary[@"size"]];
 	viewSpecifier.size = [self vs_sizeFromDictionary:sizeDictionary];
@@ -466,6 +469,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	VSTextLabelSpecifier *labelSpecifier = [VSTextLabelSpecifier new];
 	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	if (!dictionary)
+		return nil;
 	
 	NSDictionary *fontDictionary = [self dictionaryFromObject:dictionary[@"font"]];
 	labelSpecifier.font = [self vs_fontFromDictionary:fontDictionary sizeAdjustment:sizeAdjustment];
@@ -603,6 +609,29 @@ static UIColor *colorWithHexString(NSString *hexString);
 	}
     
 	return NSLineBreakByTruncatingTail;
+}
+
+
+- (UIStatusBarStyle)statusBarStyleForKey:(NSString *)key {
+	
+	id obj = [self objectForKey:key];
+	return [self vs_statusBarStyleFromObject:obj];
+}
+
+
+- (UIStatusBarStyle)vs_statusBarStyleFromObject:(id)obj {
+    
+	NSString *statusBarStyleString = [self vs_stringFromObject:obj];
+	
+	if (!stringIsEmpty(statusBarStyleString)) {
+		statusBarStyleString = [statusBarStyleString lowercaseString];
+		if ([statusBarStyleString isEqualToString:@"darkcontent"])
+			return UIStatusBarStyleDefault;
+		else if ([statusBarStyleString isEqualToString:@"lightcontent"])
+			return UIStatusBarStyleLightContent;
+	}
+    
+	return UIStatusBarStyleDefault;
 }
 
 
