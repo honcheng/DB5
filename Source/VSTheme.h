@@ -140,6 +140,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) NSInteger numberOfLines;
 @property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, assign) NSLineBreakMode lineBreakMode;
+@property (nonatomic, assign) VSTextCaseTransform textTransform;
 @property (nonatomic, copy) UIColor *color;
 @property (nonatomic, copy) UIColor *highlightedColor;
 @property (nonatomic, copy) UIColor *backgroundColor;
@@ -151,5 +152,8 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 /** Attributes representing the font, color, backgroundColor, alignment and lineBreakMode */
 @property (nonatomic) NSDictionary *attributes;
+
+- (UILabel *)labelWithText:(NSString *)text;
+- (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame;
 
 @end

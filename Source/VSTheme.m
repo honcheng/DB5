@@ -401,14 +401,20 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (VSTextCaseTransform)textCaseTransformForKey:(NSString *)key {
 
 	NSString *s = [self stringForKey:key];
+	return [self vs_textCaseTransformFromString:s];
+}
+
+
+- (VSTextCaseTransform)vs_textCaseTransformFromString:(NSString *)s {
+	
 	if (s == nil)
 		return VSTextCaseTransformNone;
-
+	
 	if ([s caseInsensitiveCompare:@"lowercase"] == NSOrderedSame)
 		return VSTextCaseTransformLower;
 	else if ([s caseInsensitiveCompare:@"uppercase"] == NSOrderedSame)
 		return VSTextCaseTransformUpper;
-
+	
 	return VSTextCaseTransformNone;
 }
 
@@ -483,6 +489,9 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	NSString *lineBreakString = [self vs_stringFromObject:dictionary[@"lineBreakMode"]];
 	labelSpecifier.lineBreakMode = [self vs_lineBreakModeFromObject:lineBreakString];
+	
+	NSString *textTransformString = [self vs_stringFromObject:dictionary[@"textTransform"]];
+	labelSpecifier.textTransform = [self vs_textCaseTransformFromString:textTransformString];
 
 	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
 	if (colorDictionary)
@@ -682,26 +691,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	VSTextLabelSpecifier *textLabelSpecifier = [self textLabelSpecifierForKey:labelSpecifierKey sizeAdjustment:sizeAdjustment];
 	
-	CGRect frame;
-	frame.size = textLabelSpecifier.size;
-	frame.origin = textLabelSpecifier.position;
-	
-	UILabel *label = [[UILabel alloc] initWithFrame:frame];
-	label.text = text;
-
-	label.font = textLabelSpecifier.font;
-	label.textAlignment = textLabelSpecifier.alignment;
-	
-	if (textLabelSpecifier.color)
-		label.textColor = textLabelSpecifier.color;
-	
-	if (textLabelSpecifier.backgroundColor)
-		label.backgroundColor = textLabelSpecifier.backgroundColor;
-
-	if (textLabelSpecifier.sizeToFit)
-		[label sizeToFit];
-	
-	return label;
+	return [textLabelSpecifier labelWithText:text];
 }
 
 @end
@@ -738,6 +728,55 @@ static UIColor *colorWithHexString(NSString *hexString);
 @end
 
 @implementation VSTextLabelSpecifier
+
+- (UILabel *)labelWithText:(NSString *)text
+{
+	CGRect frame;
+	frame.size = self.size;
+	frame.origin = self.position;
+
+	return [self labelWithText:text frame:frame];
+}
+
+- (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame
+{
+	UILabel *label = [[UILabel alloc] initWithFrame:frame];
+	
+	switch (self.textTransform) {
+		case VSTextCaseTransformUpper:
+		{
+			label.text = [text uppercaseString];
+			break;
+		}
+			
+		case VSTextCaseTransformLower:
+		{
+			label.text = [text lowercaseString];
+			break;
+		}
+			
+		case VSTextCaseTransformNone:
+		default:
+		{
+			label.text = text;
+			break;
+		}
+	}
+	
+	label.font = self.font;
+	label.textAlignment = self.alignment;
+	
+	if (self.color)
+		label.textColor = self.color;
+	
+	if (self.backgroundColor)
+		label.backgroundColor = self.backgroundColor;
+	
+	if (self.sizeToFit)
+		[label sizeToFit];
+	
+	return label;
+}
 
 @end
 
