@@ -154,9 +154,18 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) UIEdgeInsets padding;
 
 /** Attributes representing the font, color, backgroundColor, alignment and lineBreakMode */
-@property (nonatomic) NSDictionary *attributes;
+@property (nonatomic, strong, readonly) NSDictionary *attributes;
 
 - (UILabel *)labelWithText:(NSString *)text;
 - (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame;
+
+/** Returns the originalText after applying the text transformation. */
+- (NSString *)transformText:(NSString *)originalText;
+
+/** Returns the attributes that can be used to make an \c NSAttributedString by
+ populating the keys with the appropriate values. Valid keys are
+ \c NSFontAttributeName, \c NSParagraphStyleAttributeName,
+ \c NSForegroundColorAttributeName, \c NSBackgroundColorAttributeName */
+- (NSDictionary *)attributesForKeys:(NSArray *)keys;
 
 @end

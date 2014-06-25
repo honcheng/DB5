@@ -12,6 +12,11 @@
 static BOOL stringIsEmpty(NSString *s);
 static UIColor *colorWithHexString(NSString *hexString);
 
+@interface VSTextLabelSpecifier ()
+// Redeclare for accessors
+@property (nonatomic, strong) NSDictionary *attributes;
+@end
+
 
 @interface VSTheme ()
 
@@ -519,36 +524,16 @@ static UIColor *colorWithHexString(NSString *hexString);
 	labelSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
 	// Generate an attributes dictionary that can be used to style an attributed string
-	labelSpecifier.attributes = [self vs_textAttributesTextLabelSpecifier:labelSpecifier];
+	static NSArray *allAttributes = nil;
+	if (!allAttributes) {
+	
+		allAttributes = @[NSFontAttributeName, NSForegroundColorAttributeName, NSBackgroundColorAttributeName, NSParagraphStyleAttributeName];
+	}
+	labelSpecifier.attributes = [labelSpecifier attributesForKeys:allAttributes];
 	
 	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
 	
 	return labelSpecifier;
-}
-
-
-- (NSDictionary *)vs_textAttributesTextLabelSpecifier:(VSTextLabelSpecifier *)textLabelSpecifier {
-	
-	NSMutableParagraphStyle *paragraphStyle =
-	[[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-	
-	paragraphStyle.lineBreakMode = textLabelSpecifier.lineBreakMode;
-	paragraphStyle.alignment = textLabelSpecifier.alignment;
-	
-	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:4];
-	
-	if (textLabelSpecifier.font)
-		textAttributes[NSFontAttributeName] = textLabelSpecifier.font;
-	
-	if (textLabelSpecifier.color)
-		textAttributes[NSForegroundColorAttributeName] = textLabelSpecifier.color;
-	
-	if (textLabelSpecifier.backgroundColor)
-		textAttributes[NSBackgroundColorAttributeName] = textLabelSpecifier.backgroundColor;
-	
-	textAttributes[NSParagraphStyleAttributeName] = paragraphStyle;
-	
-	return [textAttributes copy];
 }
 
 
@@ -666,26 +651,26 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
-- (void)clearFontCache
-{
+- (void)clearFontCache {
+	
 	[self.fontCache removeAllObjects];
 }
 
 
-- (void)clearColorCache
-{
+- (void)clearColorCache {
+	
 	[self.colorCache removeAllObjects];
 }
 
 
-- (void)clearViewSpecifierCache
-{
+- (void)clearViewSpecifierCache {
+	
 	[self.viewSpecifierCache removeAllObjects];
 }
 
 
-- (void)clearTextLabelSpecifierCache
-{
+- (void)clearTextLabelSpecifierCache {
+	
 	[self.textLabelSpecifierCache removeAllObjects];
 }
 
@@ -758,8 +743,8 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 @implementation VSTextLabelSpecifier
 
-- (UILabel *)labelWithText:(NSString *)text
-{
+- (UILabel *)labelWithText:(NSString *)text {
+	
 	CGRect frame;
 	frame.size = self.size;
 	frame.origin = self.position;
@@ -767,31 +752,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 	return [self labelWithText:text frame:frame];
 }
 
-- (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame
-{
+- (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame {
+	
 	UILabel *label = [[UILabel alloc] initWithFrame:frame];
 	
-	switch (self.textTransform) {
-		case VSTextCaseTransformUpper:
-		{
-			label.text = [text uppercaseString];
-			break;
-		}
-			
-		case VSTextCaseTransformLower:
-		{
-			label.text = [text lowercaseString];
-			break;
-		}
-			
-		case VSTextCaseTransformNone:
-		default:
-		{
-			label.text = text;
-			break;
-		}
-	}
-	
+	label.text = [self transformText:text];
 	label.font = self.font;
 	label.textAlignment = self.alignment;
 	
@@ -805,6 +770,76 @@ static UIColor *colorWithHexString(NSString *hexString);
 		[label sizeToFit];
 	
 	return label;
+}
+
+- (NSString *)transformText:(NSString *)originalText {
+	
+	NSString *transformedText = nil;
+	
+	switch (self.textTransform) {
+		case VSTextCaseTransformUpper:
+		{
+			transformedText = [originalText uppercaseString];
+			break;
+		}
+			
+		case VSTextCaseTransformLower:
+		{
+			transformedText = [originalText lowercaseString];
+			break;
+		}
+			
+		case VSTextCaseTransformNone:
+		default:
+		{
+			transformedText = originalText;
+			break;
+		}
+	}
+	
+	return transformedText;
+}
+
+- (NSDictionary *)attributesForKeys:(NSArray *)keys {
+	
+	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:[keys count]];
+	
+	[keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+		
+		if ([key isEqualToString:NSParagraphStyleAttributeName]) {
+			
+			NSMutableParagraphStyle *paragraphStyle =
+			[[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+			
+			paragraphStyle.lineBreakMode = self.lineBreakMode;
+			paragraphStyle.alignment = self.alignment;
+
+			textAttributes[key] = paragraphStyle;
+			
+		} else if ([key isEqualToString:NSFontAttributeName]) {
+			
+			if (self.font)
+				textAttributes[key] = self.font;
+			
+		} else if ([key isEqualToString:NSForegroundColorAttributeName]) {
+			
+			if (self.color)
+				textAttributes[key] = self.color;
+			
+		} else if ([key isEqualToString:NSBackgroundColorAttributeName]) {
+			
+			if (self.backgroundColor)
+				textAttributes[key] = self.backgroundColor;
+			
+		} else {
+			
+			NSAssert(0, @"Invalid key %@ to obtain attribute for", key);
+			
+		}
+		
+	}];
+	
+	return [textAttributes copy];
 }
 
 @end
