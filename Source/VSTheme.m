@@ -755,20 +755,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 - (UILabel *)labelWithText:(NSString *)text frame:(CGRect)frame {
 	
 	UILabel *label = [[UILabel alloc] initWithFrame:frame];
-	
-	label.text = [self transformText:text];
-	label.font = self.font;
-	label.textAlignment = self.alignment;
-	
-	if (self.color)
-		label.textColor = self.color;
-	
-	if (self.backgroundColor)
-		label.backgroundColor = self.backgroundColor;
-	
-	if (self.sizeToFit)
-		[label sizeToFit];
-	
+	[self applyToLabel:label withText:text];
 	return label;
 }
 
@@ -840,6 +827,27 @@ static UIColor *colorWithHexString(NSString *hexString);
 	}];
 	
 	return [textAttributes copy];
+}
+
+- (void)applyToLabel:(UILabel *)label
+{
+	[self applyToLabel:label withText:nil];
+}
+
+- (void)applyToLabel:(UILabel *)label withText:(NSString *)text
+{
+	label.text = [self transformText:text];
+	label.font = self.font;
+	label.textAlignment = self.alignment;
+	
+	if (self.color)
+		label.textColor = self.color;
+	
+	if (self.backgroundColor)
+		label.backgroundColor = self.backgroundColor;
+	
+	if (self.sizeToFit)
+		[label sizeToFit];
 }
 
 @end

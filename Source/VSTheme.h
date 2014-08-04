@@ -168,4 +168,13 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
  \c NSForegroundColorAttributeName, \c NSBackgroundColorAttributeName */
 - (NSDictionary *)attributesForKeys:(NSArray *)keys;
 
+/**
+ Apply the specifier attributes to the label
+ */
+- (void)applyToLabel:(UILabel *)label;
+
+/**
+ Apply the specifier attributes to the label, setting and transforming text
+ */
+- (void)applyToLabel:(UILabel *)label withText:(NSString *)text;
 @end
