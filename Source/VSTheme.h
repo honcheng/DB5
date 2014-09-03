@@ -146,6 +146,10 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, strong) VSTextLabelSpecifier *titleLabelSpecifier;
 @property (nonatomic, strong) VSTextLabelSpecifier *buttonsLabelSpecifier;
 
+/// Specify a containing class to limit the customization to bar button items
+/// in the navigation bar of the containing class
+- (void)applyToNavigationBar:(UINavigationBar *)navigationBar containedInClass:(Class)containingClass;
+
 @end
 
 

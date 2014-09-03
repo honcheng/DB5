@@ -817,6 +817,52 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 @implementation VSNavigationBarSpecifier
 
+- (void)applyToNavigationBar:(UINavigationBar *)navigationBar containedInClass:(Class)containingClass
+{
+	if (self.barColor)
+	{
+		navigationBar.barTintColor = self.barColor;
+	}
+	
+	if (self.tintColor)
+	{
+		navigationBar.tintColor = self.tintColor;
+	}
+	
+	if (self.titleLabelSpecifier)
+	{
+		NSDictionary *attributes =
+		[self.titleLabelSpecifier attributesForKeys:@[NSFontAttributeName, NSForegroundColorAttributeName]];
+		
+		if (attributes)
+		{
+			navigationBar.titleTextAttributes = attributes;
+		}
+	}
+
+	if (self.buttonsLabelSpecifier)
+	{
+		NSDictionary *attributes =
+		[self.buttonsLabelSpecifier attributesForKeys:@[NSFontAttributeName, NSForegroundColorAttributeName]];
+		
+		if (attributes)
+		{
+			if (containingClass)
+			{
+				[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], containingClass, nil]
+				 setTitleTextAttributes:attributes
+				 forState:UIControlStateNormal];
+			}
+			else
+			{
+				[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil]
+				 setTitleTextAttributes:attributes
+				 forState:UIControlStateNormal];
+			}
+		}
+	}
+}
+
 @end
 
 
