@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 };
 
 
-@class VSAnimationSpecifier, VSViewSpecifier, VSTextLabelSpecifier;
+@class VSAnimationSpecifier, VSViewSpecifier, VSNavigationBarSpecifier, VSTextLabelSpecifier;
 
 @interface VSTheme : NSObject
 
@@ -60,6 +60,10 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 - (VSViewSpecifier *)viewSpecifierForKey:(NSString *)key;
 
+- (VSNavigationBarSpecifier *)navigationBarSpecifierForKey:(NSString *)key;
+
+- (VSNavigationBarSpecifier *)navigationBarSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment;
+
 - (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key;
 
 /** Optionally make adjustment to the size of the font by providing a positive or negative value in sizeAdjustment */
@@ -83,6 +87,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 - (void)clearFontCache;
 - (void)clearColorCache;
 - (void)clearViewSpecifierCache;
+- (void)clearNavigationBarSpecifierCache;
 - (void)clearTextLabelSpecifierCache;
 
 @end
@@ -119,6 +124,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 @end
 
+
 @interface VSViewSpecifier : NSObject
 
 @property (nonatomic, assign) CGSize size;
@@ -131,6 +137,17 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) UIEdgeInsets padding;
 
 @end
+
+
+@interface VSNavigationBarSpecifier : NSObject
+
+@property (nonatomic, copy) UIColor *barColor;
+@property (nonatomic, copy) UIColor *tintColor;
+@property (nonatomic, strong) VSTextLabelSpecifier *titleLabelSpecifier;
+@property (nonatomic, strong) VSTextLabelSpecifier *buttonsLabelSpecifier;
+
+@end
+
 
 @interface VSTextLabelSpecifier : NSObject
 
@@ -178,3 +195,4 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
  */
 - (void)applyToLabel:(UILabel *)label withText:(NSString *)text;
 @end
+

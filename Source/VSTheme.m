@@ -24,6 +24,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 @property (nonatomic, strong) NSCache *colorCache;
 @property (nonatomic, strong) NSCache *fontCache;
 @property (nonatomic, strong) NSCache *viewSpecifierCache;
+@property (nonatomic, strong) NSCache *navigationBarSpecifierCache;
 @property (nonatomic, strong) NSCache *textLabelSpecifierCache;
 @end
 
@@ -77,6 +78,15 @@ static UIColor *colorWithHexString(NSString *hexString);
 		_viewSpecifierCache = [NSCache new];
 	
 	return _viewSpecifierCache;
+}
+
+
+- (NSCache *)navigationBarSpecifierCache {
+	
+	if (!_navigationBarSpecifierCache)
+		_navigationBarSpecifierCache = [NSCache new];
+	
+	return _navigationBarSpecifierCache;
 }
 
 
@@ -424,24 +434,19 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
-- (VSViewSpecifier *)viewSpecifierForKey:(NSString *)key {
-	
-	VSViewSpecifier *cachedSpecifier = [self.viewSpecifierCache objectForKey:key];
-	if (cachedSpecifier != nil)
-		return cachedSpecifier;
-	
-	VSViewSpecifier *viewSpecifier = [VSViewSpecifier new];
-	NSDictionary *dictionary = [self dictionaryForKey:key];
+- (VSViewSpecifier *)vs_viewSpecifierFromDictionary:(NSDictionary *)dictionary {
 	
 	if (!dictionary)
 		return nil;
-
+	
+	VSViewSpecifier *viewSpecifier = [VSViewSpecifier new];
+	
 	NSDictionary *sizeDictionary = [self dictionaryFromObject:dictionary[@"size"]];
 	viewSpecifier.size = [self vs_sizeFromDictionary:sizeDictionary];
-
+	
 	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
 	viewSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
-
+	
 	NSDictionary *backgroundColorDictionary = [self dictionaryFromObject:dictionary[@"backgroundColor"]];
 	if (backgroundColorDictionary)
 		viewSpecifier.backgroundColor = [self vs_colorFromDictionary:backgroundColorDictionary];
@@ -449,13 +454,64 @@ static UIColor *colorWithHexString(NSString *hexString);
 	NSDictionary *highlightedBackgroundColorDictionary = [self dictionaryFromObject:dictionary[@"highlightedBackgroundColor"]];
 	if (highlightedBackgroundColorDictionary)
 		viewSpecifier.highlightedBackgroundColor = [self vs_colorFromDictionary:highlightedBackgroundColorDictionary];
-
+	
 	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"padding"]];
 	viewSpecifier.padding = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
 	
-	[self.viewSpecifierCache setObject:viewSpecifier forKey:key];
+	return viewSpecifier;
+}
+
+
+- (VSViewSpecifier *)viewSpecifierForKey:(NSString *)key {
+	
+	VSViewSpecifier *cachedSpecifier = [self.viewSpecifierCache objectForKey:key];
+	if (cachedSpecifier != nil)
+		return cachedSpecifier;
+	
+	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	VSViewSpecifier *viewSpecifier = [self vs_viewSpecifierFromDictionary:dictionary];
+	
+	if (viewSpecifier)
+		[self.viewSpecifierCache setObject:viewSpecifier forKey:key];
 	
 	return viewSpecifier;
+}
+
+
+- (VSNavigationBarSpecifier *)navigationBarSpecifierForKey:(NSString *)key {
+	
+	return [self navigationBarSpecifierForKey:key sizeAdjustment:0];
+}
+
+
+- (VSNavigationBarSpecifier *)navigationBarSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment {
+	
+	VSNavigationBarSpecifier *cachedSpecifier = [self.navigationBarSpecifierCache objectForKey:key];
+	if (cachedSpecifier != nil)
+		return cachedSpecifier;
+	
+	VSNavigationBarSpecifier *navigationBarSpecifier = [VSNavigationBarSpecifier new];
+	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	if (!dictionary)
+		return nil;
+	
+	NSDictionary *barColorDictionary = [self dictionaryFromObject:dictionary[@"barColor"]];
+	if (barColorDictionary)
+		navigationBarSpecifier.barColor = [self vs_colorFromDictionary:barColorDictionary];
+	
+	NSDictionary *tintColorDictionary = [self dictionaryFromObject:dictionary[@"tintColor"]];
+	if (tintColorDictionary)
+		navigationBarSpecifier.tintColor = [self vs_colorFromDictionary:tintColorDictionary];
+	
+	navigationBarSpecifier.titleLabelSpecifier = [self vs_textLabelSpecifierFromDictionary:dictionary[@"titleLabel"] sizeAdjustment:sizeAdjustment];
+	
+	navigationBarSpecifier.buttonsLabelSpecifier = [self vs_textLabelSpecifierFromDictionary:dictionary[@"buttonsLabel"] sizeAdjustment:sizeAdjustment];
+	
+	[self.navigationBarSpecifierCache setObject:navigationBarSpecifier forKey:key];
+	
+	return navigationBarSpecifier;
 }
 
 
@@ -472,11 +528,23 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (cachedSpecifier != nil)
 		return cachedSpecifier;
 	
-	VSTextLabelSpecifier *labelSpecifier = [VSTextLabelSpecifier new];
 	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	VSTextLabelSpecifier *labelSpecifier = [self vs_textLabelSpecifierFromDictionary:dictionary sizeAdjustment:sizeAdjustment];
+	
+	if (labelSpecifier)
+		[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
+	
+	return labelSpecifier;
+}
+
+
+- (VSTextLabelSpecifier *)vs_textLabelSpecifierFromDictionary:(NSDictionary *)dictionary sizeAdjustment:(CGFloat)sizeAdjustment {
 	
 	if (!dictionary)
 		return nil;
+	
+	VSTextLabelSpecifier *labelSpecifier = [VSTextLabelSpecifier new];
 	
 	NSDictionary *fontDictionary = [self dictionaryFromObject:dictionary[@"font"]];
 	labelSpecifier.font = [self vs_fontFromDictionary:fontDictionary sizeAdjustment:sizeAdjustment];
@@ -485,7 +553,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	labelSpecifier.size = [self vs_sizeFromDictionary:sizeDictionary];
 	
 	labelSpecifier.sizeToFit = [self vs_boolForObject:dictionary[@"sizeToFit"]];
-
+	
 	NSDictionary *positionDictionary = [self dictionaryFromObject:dictionary[@"position"]];
 	labelSpecifier.position = [self vs_pointFromDictionary:positionDictionary];
 	
@@ -494,7 +562,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 		labelSpecifier.numberOfLines = [self vs_integerFromObject:numberOfLines];
 	else
 		labelSpecifier.numberOfLines = 1;
-
+	
 	NSString *alignmentString = [self vs_stringFromObject:dictionary[@"alignment"]];
 	labelSpecifier.alignment = [self vs_textAlignmentFromObject:alignmentString];
 	
@@ -503,11 +571,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	NSString *textTransformString = [self vs_stringFromObject:dictionary[@"textTransform"]];
 	labelSpecifier.textTransform = [self vs_textCaseTransformFromString:textTransformString];
-
+	
 	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
 	if (colorDictionary)
 		labelSpecifier.color = [self vs_colorFromDictionary:colorDictionary];
-
+	
 	NSDictionary *highlightedColorDictionary = [self dictionaryFromObject:dictionary[@"highlightedColor"]];
 	if (highlightedColorDictionary)
 		labelSpecifier.highlightedColor = [self vs_colorFromDictionary:highlightedColorDictionary];
@@ -526,12 +594,10 @@ static UIColor *colorWithHexString(NSString *hexString);
 	// Generate an attributes dictionary that can be used to style an attributed string
 	static NSArray *allAttributes = nil;
 	if (!allAttributes) {
-	
+		
 		allAttributes = @[NSFontAttributeName, NSForegroundColorAttributeName, NSBackgroundColorAttributeName, NSParagraphStyleAttributeName];
 	}
 	labelSpecifier.attributes = [labelSpecifier attributesForKeys:allAttributes];
-	
-	[self.textLabelSpecifierCache setObject:labelSpecifier forKey:cacheKey];
 	
 	return labelSpecifier;
 }
@@ -669,6 +735,11 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
+- (void)clearNavigationBarSpecifierCache {
+	
+	[self.navigationBarSpecifierCache removeAllObjects];
+}
+
 - (void)clearTextLabelSpecifierCache {
 	
 	[self.textLabelSpecifierCache removeAllObjects];
@@ -733,13 +804,21 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 #pragma mark -
 
+
 @implementation VSAnimationSpecifier
 
 @end
 
+
 @implementation VSViewSpecifier
 
 @end
+
+
+@implementation VSNavigationBarSpecifier
+
+@end
+
 
 @implementation VSTextLabelSpecifier
 
