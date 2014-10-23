@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 };
 
 
-@class VSAnimationSpecifier, VSViewSpecifier, VSNavigationBarSpecifier, VSTextLabelSpecifier;
+@class VSAnimationSpecifier, VSViewSpecifier, VSNavigationBarSpecifier, VSTextLabelSpecifier, VSDashedBorderSpecifier;
 
 @interface VSTheme : NSObject
 
@@ -68,6 +68,8 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 
 /** Optionally make adjustment to the size of the font by providing a positive or negative value in sizeAdjustment */
 - (VSTextLabelSpecifier *)textLabelSpecifierForKey:(NSString *)key sizeAdjustment:(CGFloat)sizeAdjustment;
+
+- (VSDashedBorderSpecifier *)dashedBorderSpecifierForKey:(NSString *)key;
 
 /** Where the possible values for text alignment are left, center, right, justified, natural */
 - (NSTextAlignment)textAlignmentForKey:(NSString *)key;
@@ -200,3 +202,14 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 - (void)applyToLabel:(UILabel *)label withText:(NSString *)text;
 @end
 
+
+@interface VSDashedBorderSpecifier : NSObject
+
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic, strong) UIColor *color;
+@property (nonatomic) CGFloat cornerRadius;
+@property (nonatomic) CGFloat paintedSegmentLength;
+@property (nonatomic) CGFloat spacingSegmentLength;
+@property (nonatomic) UIEdgeInsets insets;
+
+@end

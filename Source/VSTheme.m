@@ -603,6 +603,31 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
+- (VSDashedBorderSpecifier *)dashedBorderSpecifierForKey:(NSString *)key
+{
+	NSDictionary *dictionary = [self dictionaryForKey:key];
+	
+	if (!dictionary)
+		return nil;
+	
+	VSDashedBorderSpecifier *dashedBorderSpecifier = [VSDashedBorderSpecifier new];
+	
+	NSDictionary *colorDictionary = [self dictionaryFromObject:dictionary[@"color"]];
+	if (colorDictionary)
+		dashedBorderSpecifier.color = [self vs_colorFromDictionary:colorDictionary];
+	
+	dashedBorderSpecifier.lineWidth = [self vs_floatFromObject:dictionary[@"lineWidth"]];
+	dashedBorderSpecifier.cornerRadius = [self vs_floatFromObject:dictionary[@"cornerRadius"]];
+	dashedBorderSpecifier.paintedSegmentLength = [self vs_floatFromObject:dictionary[@"paintedSegmentLength"]];
+	dashedBorderSpecifier.spacingSegmentLength = [self vs_floatFromObject:dictionary[@"spacingSegmentLength"]];
+	
+	NSDictionary *edgeInsetsDictionary = [self dictionaryFromObject:dictionary[@"insets"]];
+	dashedBorderSpecifier.insets = [self vs_edgeInsetsFromDictionary:edgeInsetsDictionary];
+	
+	return dashedBorderSpecifier;
+}
+
+
 - (NSTextAlignment)textAlignmentForKey:(NSString *)key {
 	
 	id obj = [self objectForKey:key];
@@ -976,6 +1001,15 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 @end
+
+
+
+@implementation VSDashedBorderSpecifier
+
+// Nothing to implement
+
+@end
+
 
 
 static BOOL stringIsEmpty(NSString *s) {
