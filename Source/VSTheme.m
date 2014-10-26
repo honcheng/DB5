@@ -509,6 +509,10 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	navigationBarSpecifier.buttonsLabelSpecifier = [self vs_textLabelSpecifierFromDictionary:dictionary[@"buttonsLabel"] sizeAdjustment:sizeAdjustment];
 	
+	// Always translucent by default
+	BOOL translucent = ![self vs_boolForObject:dictionary[@"disableTranslucency"]];
+	navigationBarSpecifier.translucent = translucent;
+	
 	[self.navigationBarSpecifierCache setObject:navigationBarSpecifier forKey:key];
 	
 	return navigationBarSpecifier;
@@ -853,6 +857,8 @@ static UIColor *colorWithHexString(NSString *hexString);
 	{
 		navigationBar.tintColor = self.tintColor;
 	}
+	
+	navigationBar.translucent = self.translucent;
 	
 	if (self.titleLabelSpecifier)
 	{
