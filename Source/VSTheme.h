@@ -80,6 +80,9 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** Where the possible values are darkcontent, lightcontent */
 - (UIStatusBarStyle)statusBarStyleForKey:(NSString *)key;
 
+/** Where the possible values are default, dark, light */
+- (UIKeyboardAppearance)keyboardAppearanceForKey:(NSString *)key;
+
 /** Returns YES only if the theme explicitly provides the key */
 - (BOOL)containsKey:(NSString *)key;
 

@@ -711,6 +711,29 @@ static UIColor *colorWithHexString(NSString *hexString);
 }
 
 
+- (UIKeyboardAppearance)keyboardAppearanceForKey:(NSString *)key {
+	
+	id obj = [self objectForKey:key];
+	return [self vs_keyboardAppearanceFromObject:obj];
+}
+
+
+- (UIKeyboardAppearance)vs_keyboardAppearanceFromObject:(id)obj {
+	
+	NSString *keyboardAppearanceString = [self vs_stringFromObject:obj];
+	
+	if (!stringIsEmpty(keyboardAppearanceString)) {
+		keyboardAppearanceString = [keyboardAppearanceString lowercaseString];
+		if ([keyboardAppearanceString isEqualToString:@"dark"])
+			return UIKeyboardAppearanceDark;
+		else if ([keyboardAppearanceString isEqualToString:@"light"])
+			return UIKeyboardAppearanceLight;
+	}
+	
+	return UIKeyboardAppearanceDefault;
+}
+
+
 /**
  
  Other Public Helper Methods
