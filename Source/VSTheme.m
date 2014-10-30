@@ -261,13 +261,22 @@ static UIColor *colorWithHexString(NSString *hexString);
 	
 	if (colorDictionary) {
 		NSString *hexString = [self vs_stringFromObject:colorDictionary[@"hex"]];
+		id alphaObject = colorDictionary[@"alpha"];
 		
 		if (hexString) {
 			color = colorWithHexString(hexString);
 			
-			if (colorDictionary[@"alpha"] != nil) {
+			if (alphaObject != nil) {
 				CGFloat alpha = [self vs_floatFromObject:colorDictionary[@"alpha"]];
 				color = [color colorWithAlphaComponent:alpha];
+			}
+		}
+		else if (alphaObject)
+		{
+			CGFloat alpha = [self vs_floatFromObject:colorDictionary[@"alpha"]];
+			if (alpha == 0)
+			{
+				color = [UIColor clearColor];
 			}
 		}
 	}
