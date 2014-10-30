@@ -189,15 +189,23 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** Returns the originalText after applying the text transformation. */
 - (NSString *)transformText:(NSString *)originalText;
 
+/** Returns an attributed string with attributes specified in the receiver's
+ attributes dictionary and by applying any transformation to the text */
+- (NSAttributedString *)attributedStringWithText:(NSString *)text;
+
 /** Returns an attributed string with attributes specified in the attributes
  dictionary and by applying any transformation to the text */
-- (NSAttributedString *)attributedStringWithText:(NSString *)text;
+- (NSAttributedString *)attributedStringWithText:(NSString *)text attributes:(NSDictionary *)attributes;
 
 /** Returns the attributes that can be used to make an \c NSAttributedString by
  populating the keys with the appropriate values. Valid keys are
  \c NSFontAttributeName, \c NSParagraphStyleAttributeName,
  \c NSForegroundColorAttributeName, \c NSBackgroundColorAttributeName */
 - (NSDictionary *)attributesForKeys:(NSArray *)keys;
+
+/** Convenience accessor that returns the attributes \c NSFontAttributeName,
+ \c NSForegroundColorAttributeName, \c NSBackgroundColorAttributeName */
+- (NSDictionary *)fontAndColorAttributes;
 
 /**
  Apply the specifier attributes to the label
