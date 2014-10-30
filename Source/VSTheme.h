@@ -189,6 +189,10 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 /** Returns the originalText after applying the text transformation. */
 - (NSString *)transformText:(NSString *)originalText;
 
+/** Returns an attributed string with attributes specified in the attributes
+ dictionary and by applying any transformation to the text */
+- (NSAttributedString *)attributedStringWithText:(NSString *)text;
+
 /** Returns the attributes that can be used to make an \c NSAttributedString by
  populating the keys with the appropriate values. Valid keys are
  \c NSFontAttributeName, \c NSParagraphStyleAttributeName,

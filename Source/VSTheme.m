@@ -975,6 +975,15 @@ static UIColor *colorWithHexString(NSString *hexString);
 	return transformedText;
 }
 
+- (NSAttributedString *)attributedStringWithText:(NSString *)text {
+	
+	NSString *transformedText = [self transformText:text];
+	
+	NSDictionary *allattributes = [self attributesForKeys:@[NSFontAttributeName, NSForegroundColorAttributeName, NSBackgroundColorAttributeName, NSParagraphStyleAttributeName]];
+	
+	return [[NSAttributedString alloc] initWithString:transformedText attributes:allattributes];
+}
+
 - (NSDictionary *)attributesForKeys:(NSArray *)keys {
 	
 	NSMutableDictionary *textAttributes = [[NSMutableDictionary alloc] initWithCapacity:[keys count]];
