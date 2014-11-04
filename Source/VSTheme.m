@@ -1043,7 +1043,10 @@ static UIColor *colorWithHexString(NSString *hexString);
 
 - (void)applyToLabel:(UILabel *)label withText:(NSString *)text
 {
-	label.text = [self transformText:text];
+	if (text)
+	{
+		label.text = [self transformText:text];
+	}
 	label.font = self.font;
 	label.textAlignment = self.alignment;
 	
