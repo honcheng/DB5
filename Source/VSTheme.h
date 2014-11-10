@@ -168,6 +168,14 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @property (nonatomic, assign) CGPoint position;
 /** Default: 1 (single line) */
 @property (nonatomic, assign) NSInteger numberOfLines;
+
+@property (nonatomic, assign) CGFloat paragraphSpacing;
+@property (nonatomic, assign) CGFloat paragraphSpacingBefore;
+/// If multiple is > 0, takes precedence over paragraphSpacing
+@property (nonatomic, assign) CGFloat paragraphSpacingMultiple;
+/// If multiple is > 0, takes precedence over paragraphSpacingBefore
+@property (nonatomic, assign) CGFloat paragraphSpacingBeforeMultiple;
+
 @property (nonatomic, assign) NSTextAlignment alignment;
 @property (nonatomic, assign) NSLineBreakMode lineBreakMode;
 @property (nonatomic, assign) VSTextCaseTransform textTransform;
