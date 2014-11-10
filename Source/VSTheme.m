@@ -1049,6 +1049,7 @@ static UIColor *colorWithHexString(NSString *hexString);
 	}
 	label.font = self.font;
 	label.textAlignment = self.alignment;
+	label.numberOfLines = self.numberOfLines;
 	
 	if (self.color)
 		label.textColor = self.color;
