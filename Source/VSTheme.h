@@ -147,6 +147,7 @@ typedef NS_ENUM(NSUInteger, VSTextCaseTransform) {
 @interface VSNavigationBarSpecifier : NSObject
 
 @property (nonatomic) BOOL translucent;
+@property (nonatomic, copy) UIColor *popoverBackgroundColor;
 @property (nonatomic, copy) UIColor *barColor;
 @property (nonatomic, copy) UIColor *tintColor;
 @property (nonatomic, strong) VSTextLabelSpecifier *titleLabelSpecifier;

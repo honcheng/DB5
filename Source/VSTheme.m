@@ -506,6 +506,10 @@ static UIColor *colorWithHexString(NSString *hexString);
 	if (!dictionary)
 		return nil;
 	
+	NSDictionary *popoverBackgroundColor = [self dictionaryFromObject:dictionary[@"popoverBackgroundColor"]];
+	if (popoverBackgroundColor)
+		navigationBarSpecifier.popoverBackgroundColor = [self vs_colorFromDictionary:popoverBackgroundColor];
+	
 	NSDictionary *barColorDictionary = [self dictionaryFromObject:dictionary[@"barColor"]];
 	if (barColorDictionary)
 		navigationBarSpecifier.barColor = [self vs_colorFromDictionary:barColorDictionary];
