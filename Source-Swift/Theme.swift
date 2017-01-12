@@ -46,15 +46,20 @@ func colorWithHexString(hexString: String?) -> UIColor {
     return UIColor(red: CGFloat(r)/255.0, green: CGFloat(g)/255.0, blue: CGFloat(b)/255.0, alpha: 1.0)
 }
 
-class Theme {
+class Theme: Equatable {
     
-    var name: String?
+    var name: String
     var parentTheme: Theme?
     
     private var themeDictionary: [String: Any]
     
-    init?(themeDictionary: [String: Any]) {
+    init?(name: String, themeDictionary: [String: Any]) {
+        self.name = name
         self.themeDictionary = themeDictionary
+    }
+    
+    static func ==(lhs: Theme, rhs: Theme) -> Bool {
+        return lhs.name == rhs.name
     }
     
     // MARK: Lazy Accessors for Cache
@@ -155,10 +160,15 @@ class Theme {
     }
     
     func timeInterval(forKey key:String) -> TimeInterval {
-        guard let obj = (self.object(forKey: key) as? NSNumber)?.doubleValue else {
+        let obj = self.object(forKey: key)
+        return self.timeInterval(fromObject: obj)
+    }
+    
+    func timeInterval(fromObject object: Any?) -> TimeInterval {
+        guard let object = object as? NSNumber else {
             return 0
         }
-        return obj
+        return object.doubleValue
     }
     
     // MARK: Advanced Data Types
@@ -317,6 +327,20 @@ class Theme {
             return .curveLinear
         }
         return .curveEaseInOut
+    }
+    
+    func animationSpecifier(forKey key: String) -> AnimationSpecifier? {
+        let animationSpecifier = AnimationSpecifier()
+        
+        guard let animationDictionary = self.dictionary(forKey: key) else {
+            return nil
+        }
+        
+        animationSpecifier.duration = self.timeInterval(fromObject: animationDictionary["duration"])
+        animationSpecifier.delay = self.timeInterval(fromObject: animationDictionary["delay"])
+        animationSpecifier.curve = self.curve(fromObject: animationDictionary["curve"])
+        
+        return animationSpecifier
     }
     
     func textCaseTransform(forKey key: String) -> TextCaseTransform {
@@ -654,9 +678,30 @@ class Theme {
 
 extension Theme {
     
-//    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
-//        
-//    }
+    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView? {
+        guard let viewSpecifier = self.viewSpecifier(forKey: viewSpecifierKey) else {
+            return nil
+        }
+        let frame = CGRect(origin: viewSpecifier.position, size: viewSpecifier.size)
+        let view = UIView(frame: frame)
+        view.backgroundColor = viewSpecifier.backgroundColor
+        return view
+    }
+    
+    func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel? {
+        return self.label(withText: text, specifierKey: labelSpecifierKey, sizeAdjustment: 0)
+    }
+    
+    func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel? {
+        guard let textLabelSpecifier = self.textLabelSpecifier(forKey: labelSpecifierKey, sizeAdjustment: sizeAdjustment) else {
+            return nil
+        }
+        return textLabelSpecifier.label(withText: text)
+    }
+    
+    func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:(() -> ()), completion:((_ finished: Bool) -> ())) {
+        
+    }
     
 }
 
