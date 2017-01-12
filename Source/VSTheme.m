@@ -1018,20 +1018,20 @@ static UIColor *colorWithHexString(NSString *hexString);
 			paragraphStyle.lineBreakMode = self.lineBreakMode;
 			paragraphStyle.alignment = self.alignment;
 
-			if (self.paragraphSpacingMultiple && self.font)
+			if (self.paragraphSpacingMultiple>0 && self.font)
 			{
 				paragraphStyle.paragraphSpacing = self.font.pointSize * self.paragraphSpacingMultiple;
 			}
-			else if (self.paragraphSpacing)
+			else if (self.paragraphSpacing>0)
 			{
 				paragraphStyle.paragraphSpacing = self.paragraphSpacing;
 			}
 			
-			if (self.paragraphSpacingBeforeMultiple && self.font)
+			if (self.paragraphSpacingBeforeMultiple>0 && self.font)
 			{
 				paragraphStyle.paragraphSpacingBefore = self.font.pointSize * self.paragraphSpacingBeforeMultiple;
 			}
-			else if (self.paragraphSpacingBefore)
+			else if (self.paragraphSpacingBefore>0)
 			{
 				paragraphStyle.paragraphSpacingBefore = self.paragraphSpacingBefore;
 			}
