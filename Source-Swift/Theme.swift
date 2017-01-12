@@ -87,7 +87,9 @@ class Theme: Equatable {
     // MARK: Basic Methods to Obtain Data from PLIST
     
     func object(forKey key:String) -> Any? {
-        var obj = self.themeDictionary[key]
+        
+        let themeDictionary = self.themeDictionary as NSDictionary
+        var obj = themeDictionary.value(forKeyPath: key)
         if obj == nil, let parentTheme = self.parentTheme {
             obj = parentTheme.object(forKey: key)
         }
