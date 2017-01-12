@@ -678,9 +678,9 @@ class Theme: Equatable {
 
 extension Theme {
     
-    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView? {
+    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
         guard let viewSpecifier = self.viewSpecifier(forKey: viewSpecifierKey) else {
-            return nil
+            assert(false, "viewSpecifier is nil for key \(viewSpecifierKey)")
         }
         let frame = CGRect(origin: viewSpecifier.position, size: viewSpecifier.size)
         let view = UIView(frame: frame)
@@ -688,19 +688,24 @@ extension Theme {
         return view
     }
     
-    func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel? {
+    func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel {
         return self.label(withText: text, specifierKey: labelSpecifierKey, sizeAdjustment: 0)
     }
     
-    func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel? {
+    func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel {
         guard let textLabelSpecifier = self.textLabelSpecifier(forKey: labelSpecifierKey, sizeAdjustment: sizeAdjustment) else {
-            return nil
+            assert(false, "label is nil for key \(labelSpecifierKey)")
         }
         return textLabelSpecifier.label(withText: text)
     }
     
-    func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:(() -> ()), completion:((_ finished: Bool) -> ())) {
+    func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:@escaping (() -> ()), completion:@escaping ((_ finished: Bool) -> ())) {
         
+        guard let animationSpecifier = self.animationSpecifier(forKey: animationSpecifierKey) else {
+            assert(false, "animation specifier is nil for key \(animationSpecifierKey)")
+        }
+        
+        UIView.animate(withDuration: animationSpecifier.duration, delay: animationSpecifier.delay, options: animationSpecifier.curve, animations: animations, completion: completion)
     }
     
 }

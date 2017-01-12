@@ -9,7 +9,7 @@
 import UIKit
 
 class ThemeLoader {
-    private(set) var defaultTheme: Theme?
+    private(set) var defaultTheme: Theme!
     private(set) var themes: [Theme] = []
     
     init?() {
@@ -34,12 +34,9 @@ class ThemeLoader {
         
         /*All themes inherit from the default theme.*/
         for oneTheme in themes {
-            if let defaultTheme = self.defaultTheme {
-                if oneTheme != defaultTheme {
-                    oneTheme.parentTheme = defaultTheme
-                }
+            if oneTheme != self.defaultTheme {
+                oneTheme.parentTheme = defaultTheme
             }
-            
         }
         
         self.themes = themes

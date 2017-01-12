@@ -8,24 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		F8A43C291E271AE400F259AA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A43C281E271AE400F259AA /* AppDelegate.swift */; };
-		F8A43C2B1E271AE400F259AA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A43C2A1E271AE400F259AA /* ViewController.swift */; };
 		F8A43C2E1E271AE400F259AA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8A43C2C1E271AE400F259AA /* Main.storyboard */; };
 		F8A43C301E271AE400F259AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8A43C2F1E271AE400F259AA /* Assets.xcassets */; };
 		F8A43C331E271AE400F259AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8A43C311E271AE400F259AA /* LaunchScreen.storyboard */; };
 		F8A43C3B1E271B1E00F259AA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A43C3A1E271B1E00F259AA /* Theme.swift */; };
 		F8A43C3D1E271B2C00F259AA /* ThemeLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A43C3C1E271B2C00F259AA /* ThemeLoader.swift */; };
+		F8A43C3F1E27649B00F259AA /* DB5.plist in Resources */ = {isa = PBXBuildFile; fileRef = F8A43C3E1E27649B00F259AA /* DB5.plist */; };
+		F8A43C421E2764C800F259AA /* DB5ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A43C401E2764C800F259AA /* DB5ViewController.swift */; };
+		F8A43C431E2764C800F259AA /* DB5ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8A43C411E2764C800F259AA /* DB5ViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F8A43C251E271AE400F259AA /* DB5Demo-Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DB5Demo-Swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8A43C281E271AE400F259AA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F8A43C2A1E271AE400F259AA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F8A43C2D1E271AE400F259AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F8A43C2F1E271AE400F259AA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8A43C321E271AE400F259AA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8A43C341E271AE400F259AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F8A43C3A1E271B1E00F259AA /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Theme.swift; path = "../../Source-Swift/Theme.swift"; sourceTree = "<group>"; };
 		F8A43C3C1E271B2C00F259AA /* ThemeLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeLoader.swift; path = "../../Source-Swift/ThemeLoader.swift"; sourceTree = "<group>"; };
+		F8A43C3E1E27649B00F259AA /* DB5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DB5.plist; sourceTree = "<group>"; };
+		F8A43C401E2764C800F259AA /* DB5ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DB5ViewController.swift; sourceTree = "<group>"; };
+		F8A43C411E2764C800F259AA /* DB5ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DB5ViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,12 +63,14 @@
 			isa = PBXGroup;
 			children = (
 				F8A43C281E271AE400F259AA /* AppDelegate.swift */,
-				F8A43C2A1E271AE400F259AA /* ViewController.swift */,
+				F8A43C401E2764C800F259AA /* DB5ViewController.swift */,
+				F8A43C411E2764C800F259AA /* DB5ViewController.xib */,
 				F8A43C2C1E271AE400F259AA /* Main.storyboard */,
 				F8A43C2F1E271AE400F259AA /* Assets.xcassets */,
 				F8A43C311E271AE400F259AA /* LaunchScreen.storyboard */,
 				F8A43C3A1E271B1E00F259AA /* Theme.swift */,
 				F8A43C3C1E271B2C00F259AA /* ThemeLoader.swift */,
+				F8A43C3E1E27649B00F259AA /* DB5.plist */,
 				F8A43C341E271AE400F259AA /* Info.plist */,
 			);
 			path = "DB5Demo-Swift";
@@ -131,7 +137,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8A43C331E271AE400F259AA /* LaunchScreen.storyboard in Resources */,
+				F8A43C431E2764C800F259AA /* DB5ViewController.xib in Resources */,
 				F8A43C301E271AE400F259AA /* Assets.xcassets in Resources */,
+				F8A43C3F1E27649B00F259AA /* DB5.plist in Resources */,
 				F8A43C2E1E271AE400F259AA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,8 +151,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8A43C421E2764C800F259AA /* DB5ViewController.swift in Sources */,
 				F8A43C3B1E271B1E00F259AA /* Theme.swift in Sources */,
-				F8A43C2B1E271AE400F259AA /* ViewController.swift in Sources */,
 				F8A43C3D1E271B2C00F259AA /* ThemeLoader.swift in Sources */,
 				F8A43C291E271AE400F259AA /* AppDelegate.swift in Sources */,
 			);

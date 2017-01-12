@@ -12,10 +12,17 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var themeLoader: ThemeLoader!
+    var theme: Theme!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        self.themeLoader = ThemeLoader()
+        self.theme = self.themeLoader.defaultTheme
+        
+        let viewController = DB5ViewController(nibName: nil, bundle: nil, theme: self.theme)
+        self.window?.rootViewController = viewController
+        
         return true
     }
 
