@@ -185,7 +185,7 @@ class Theme: Equatable {
         return UIImage(named: imageName)
     }
     
-    func color(forKey key: String) -> UIColor? {
+    func color(forKey key: String) -> UIColor {
         guard let cachedColor = self.colorCache.object(forKey: key as NSString) else {
             let colorDictionary = self.dictionary(forKey: key)
             let color = self.color(fromDictionary: colorDictionary)
