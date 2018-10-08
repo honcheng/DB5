@@ -8,11 +8,11 @@
 
 import UIKit
 
-class ThemeLoader {
+public class ThemeLoader {
     private(set) var defaultTheme: Theme!
     private(set) var themes: [Theme] = []
     
-    init?() {
+    public init?() {
         guard let themesFilePath = Bundle.main.path(forResource: "DB5", ofType: "plist") else {
             return nil
         }
@@ -42,7 +42,7 @@ class ThemeLoader {
         self.themes = themes
     }
     
-    func theme(named themeName: String) -> Theme? {
+    public func theme(named themeName: String) -> Theme? {
         
         for oneTheme in self.themes {
             if themeName == oneTheme.name {

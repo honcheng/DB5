@@ -46,19 +46,19 @@ func colorWithHexString(hexString: String?) -> UIColor {
     return UIColor(red: CGFloat(r)/255.0, green: CGFloat(g)/255.0, blue: CGFloat(b)/255.0, alpha: 1.0)
 }
 
-class Theme: Equatable {
+public class Theme: Equatable {
     
-    var name: String
-    var parentTheme: Theme?
+    public var name: String
+    public var parentTheme: Theme?
     
     private var themeDictionary: [String: Any]
     
-    init?(name: String, themeDictionary: [String: Any]) {
+    public init?(name: String, themeDictionary: [String: Any]) {
         self.name = name
         self.themeDictionary = themeDictionary
     }
     
-    static func ==(lhs: Theme, rhs: Theme) -> Bool {
+    public static func ==(lhs: Theme, rhs: Theme) -> Bool {
         return lhs.name == rhs.name
     }
     
@@ -86,7 +86,7 @@ class Theme: Equatable {
     
     // MARK: Basic Methods to Obtain Data from PLIST
     
-    func object(forKey key:String) -> Any? {
+    public func object(forKey key:String) -> Any? {
         
         let themeDictionary = self.themeDictionary as NSDictionary
         var obj = themeDictionary.value(forKeyPath: key)
@@ -96,30 +96,30 @@ class Theme: Equatable {
         return obj
     }
     
-    func dictionary(forKey key: String) -> [String: Any]? {
+    public func dictionary(forKey key: String) -> [String: Any]? {
         let obj = self.object(forKey: key) as? [String: Any]
         return obj
     }
     
-    func dictionary(fromObject object:Any?) -> [String: Any]? {
+    public func dictionary(fromObject object:Any?) -> [String: Any]? {
         return object as? [String: Any]
     }
     
     // MARK: Basic Data Types
     
-    func bool(forKey key: String) -> Bool {
+    public func bool(forKey key: String) -> Bool {
         let obj = self.object(forKey: key)
         return self.bool(forObject: obj)
     }
     
-    func bool(forObject object: Any?) -> Bool {
+    public func bool(forObject object: Any?) -> Bool {
         guard let object = object as? NSNumber else {
             return false
         }
         return object.boolValue
     }
     
-    func string(forKey key: String) -> String? {
+    public func string(forKey key: String) -> String? {
         let obj = self.object(forKey: key)
         return self.string(fromObject: obj)
     }
@@ -137,19 +137,19 @@ class Theme: Equatable {
         return nil
     }
     
-    func integer(forKey key:String) -> Int {
+    public func integer(forKey key:String) -> Int {
         let obj = self.object(forKey: key)
         return self.integer(fromObject: obj)
     }
     
-    func integer(fromObject object:Any?) -> Int {
+    public func integer(fromObject object:Any?) -> Int {
         guard let object = object as? NSNumber else {
             return 0
         }
         return object.intValue
     }
     
-    func float(forKey key:String) -> Float {
+    public func float(forKey key:String) -> Float {
         let obj = self.object(forKey: key)
         return self.float(fromObject: obj)
     }
@@ -161,12 +161,12 @@ class Theme: Equatable {
         return object.floatValue
     }
     
-    func timeInterval(forKey key:String) -> TimeInterval {
+    public func timeInterval(forKey key:String) -> TimeInterval {
         let obj = self.object(forKey: key)
         return self.timeInterval(fromObject: obj)
     }
     
-    func timeInterval(fromObject object: Any?) -> TimeInterval {
+    public func timeInterval(fromObject object: Any?) -> TimeInterval {
         guard let object = object as? NSNumber else {
             return 0
         }
@@ -175,7 +175,7 @@ class Theme: Equatable {
     
     // MARK: Advanced Data Types
     
-    func image(forKey key:String) -> UIImage? {
+    public func image(forKey key:String) -> UIImage? {
         guard let imageName = self.string(forKey: key) else {
             return nil
         }
@@ -185,7 +185,7 @@ class Theme: Equatable {
         return UIImage(named: imageName)
     }
     
-    func color(forKey key: String) -> UIColor {
+    public func color(forKey key: String) -> UIColor {
         guard let cachedColor = self.colorCache.object(forKey: key as NSString) else {
             let colorDictionary = self.dictionary(forKey: key)
             let color = self.color(fromDictionary: colorDictionary)
@@ -224,7 +224,7 @@ class Theme: Equatable {
         return color!
     }
     
-    func edgeInsets(forKey key: String) -> UIEdgeInsets {
+    public func edgeInsets(forKey key: String) -> UIEdgeInsets {
         let insetsDictionary = self.dictionary(forKey: key)
         let edgeInsets = self.edgeInsets(fromDictionary: insetsDictionary)
         return edgeInsets
@@ -236,7 +236,7 @@ class Theme: Equatable {
         let right = CGFloat(self.float(fromObject: dictionary?["right"]))
         let bottom = CGFloat(self.float(fromObject: dictionary?["bottom"]))
         
-        let edgeInsets = UIEdgeInsetsMake(top, left, bottom, right)
+        let edgeInsets = UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
         return edgeInsets
     }
     
@@ -244,7 +244,7 @@ class Theme: Equatable {
 //    }
 
     
-    func font(forKey key:String, sizeAdjustment: Float) -> UIFont {
+    public func font(forKey key:String, sizeAdjustment: Float) -> UIFont {
         let cacheKey = key.appendingFormat("_%.2f", sizeAdjustment)
         guard let cachedFont = self.fontCache.object(forKey: cacheKey as NSString) else {
             let fontDictionary = self.dictionary(forKey: key)
@@ -283,7 +283,7 @@ class Theme: Equatable {
         return font!
     }
     
-    func point(forKey key: String) -> CGPoint {
+    public func point(forKey key: String) -> CGPoint {
         let dictionary = self.dictionary(forKey: key)
         return self.point(fromDictionary: dictionary)
     }
@@ -295,7 +295,7 @@ class Theme: Equatable {
         return point
     }
     
-    func size(forKey key: String) -> CGSize {
+    public func size(forKey key: String) -> CGSize {
         let dictionary = self.dictionary(forKey: key)
         return self.size(fromDictionary: dictionary)
     }
@@ -307,7 +307,7 @@ class Theme: Equatable {
         return size
     }
     
-    private func curve(fromObject object: Any?) -> UIViewAnimationOptions {
+    private func curve(fromObject object: Any?) -> UIView.AnimationOptions {
         guard let curveString = self.string(fromObject: object) else {
             return .curveEaseInOut
         }
@@ -331,7 +331,7 @@ class Theme: Equatable {
         return .curveEaseInOut
     }
     
-    func animationSpecifier(forKey key: String) -> AnimationSpecifier? {
+    public func animationSpecifier(forKey key: String) -> AnimationSpecifier? {
         let animationSpecifier = AnimationSpecifier()
         
         guard let animationDictionary = self.dictionary(forKey: key) else {
@@ -363,7 +363,7 @@ class Theme: Equatable {
         return .none
     }
     
-    func viewSpecifier(forKey key: String) -> ViewSpecifier? {
+    public func viewSpecifier(forKey key: String) -> ViewSpecifier? {
         guard let cachedSpecifier = self.viewSpecifierCache.object(forKey: key as NSString) else {
             let dictionary = self.dictionary(forKey: key)
             let viewSpecifier = self.viewSpecifier(fromDictionary: dictionary)
@@ -402,11 +402,11 @@ class Theme: Equatable {
         return viewSpecifier
     }
     
-    func navigationBarSpecifier(forKey key: String) -> NavigationBarSpecifier? {
+    public func navigationBarSpecifier(forKey key: String) -> NavigationBarSpecifier? {
         return self.navigationBarSpecifier(forKey: key, sizeAdjustment:0)
     }
     
-    func navigationBarSpecifier(forKey key: String, sizeAdjustment: Float) -> NavigationBarSpecifier? {
+    public func navigationBarSpecifier(forKey key: String, sizeAdjustment: Float) -> NavigationBarSpecifier? {
         guard let cachedSpecifier = self.navigationBarSpecifierCache.object(forKey: key as NSString) else {
          
             let navigationBarSpecifier = NavigationBarSpecifier()
@@ -440,11 +440,11 @@ class Theme: Equatable {
         return cachedSpecifier
     }
     
-    func textLabelSpecifier(forKey key: String) -> TextLabelSpecifier? {
+    public func textLabelSpecifier(forKey key: String) -> TextLabelSpecifier? {
         return self.textLabelSpecifier(forKey: key, sizeAdjustment: 0)
     }
     
-    func textLabelSpecifier(forKey key: String, sizeAdjustment: Float) -> TextLabelSpecifier? {
+    public func textLabelSpecifier(forKey key: String, sizeAdjustment: Float) -> TextLabelSpecifier? {
         let cacheKey = key.appendingFormat("_%.2f", sizeAdjustment)
         guard let cachedSpecifier = self.textLabelSpecifierCache.object(forKey: cacheKey as NSString) else {
             let dictionary = self.dictionary(forKey: key)
@@ -457,7 +457,7 @@ class Theme: Equatable {
         return cachedSpecifier
     }
     
-    func textLabelSpecifier(fromDictionary dictionary: [String: Any]?, sizeAdjustment: Float) -> TextLabelSpecifier? {
+    public func textLabelSpecifier(fromDictionary dictionary: [String: Any]?, sizeAdjustment: Float) -> TextLabelSpecifier? {
         
         guard let dictionary = dictionary else {
             return nil
@@ -525,7 +525,7 @@ class Theme: Equatable {
         return labelSpecifier
     }
     
-    func dashedBorderSpecifier(forKey key: String) -> DashedBorderSpecifier? {
+    public func dashedBorderSpecifier(forKey key: String) -> DashedBorderSpecifier? {
         guard let dictionary = self.dictionary(fromObject: key) else {
             return nil
         }
@@ -547,7 +547,7 @@ class Theme: Equatable {
         return dashedBorderSpecifier
     }
     
-    func textAlignment(forKey key: String) -> NSTextAlignment {
+    public func textAlignment(forKey key: String) -> NSTextAlignment {
         let obj = self.object(forKey: key)
         return self.textAlignment(fromObject: obj)
     }
@@ -572,7 +572,7 @@ class Theme: Equatable {
         return .left
     }
     
-    func lineBreakMode(forKey key: String) -> NSLineBreakMode {
+    public func lineBreakMode(forKey key: String) -> NSLineBreakMode {
         let obj = self.object(forKey: key)
         return self.lineBreakMode(fromObject: obj)
     }
@@ -603,7 +603,7 @@ class Theme: Equatable {
         return .byTruncatingTail
     }
     
-    func statusBarStyle(forKey key: String) -> UIStatusBarStyle {
+    public func statusBarStyle(forKey key: String) -> UIStatusBarStyle {
         let obj = self.object(forKey: key)
         return self.statusBarStyle(fromObject: obj)
     }
@@ -622,7 +622,7 @@ class Theme: Equatable {
         return .default
     }
     
-    func keyboardAppearance(forKey key: String) -> UIKeyboardAppearance {
+    public func keyboardAppearance(forKey key: String) -> UIKeyboardAppearance {
         let obj = self.object(forKey: key)
         return self.keyboardAppearance(fromObject: obj)
     }
@@ -643,44 +643,44 @@ class Theme: Equatable {
     
     // MARK: Other Public Helper Methods
     
-    func contains(key: String) -> Bool {
+    public func contains(key: String) -> Bool {
         guard let _ = self.themeDictionary[key] else {
             return false
         }
         return true
     }
     
-    func containsOrInherits(key: String) -> Bool {
+    public func containsOrInherits(key: String) -> Bool {
         guard let _ = self.object(forKey: key) else {
             return false
         }
         return true
     }
     
-    func clearFontCache() {
+    public func clearFontCache() {
         self.fontCache.removeAllObjects()
     }
     
-    func clearColorCache() {
+    public func clearColorCache() {
         self.colorCache.removeAllObjects()
     }
     
-    func clearViewSpecifierCache() {
+    public func clearViewSpecifierCache() {
         self.viewSpecifierCache.removeAllObjects()
     }
     
-    func clearNavigationBarSpecifierCache() {
+    public func clearNavigationBarSpecifierCache() {
         self.navigationBarSpecifierCache.removeAllObjects()
     }
     
-    func clearTextLabelSpecifierCache() {
+    public func clearTextLabelSpecifierCache() {
         self.textLabelSpecifierCache.removeAllObjects()
     }
 }
 
-extension Theme {
+public extension Theme {
     
-    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
+    public func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
         guard let viewSpecifier = self.viewSpecifier(forKey: viewSpecifierKey) else {
             fatalError("viewSpecifier is nil for key \(viewSpecifierKey)")
         }
@@ -690,18 +690,18 @@ extension Theme {
         return view
     }
     
-    func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel {
+    public func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel {
         return self.label(withText: text, specifierKey: labelSpecifierKey, sizeAdjustment: 0)
     }
     
-    func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel {
+    public func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel {
         guard let textLabelSpecifier = self.textLabelSpecifier(forKey: labelSpecifierKey, sizeAdjustment: sizeAdjustment) else {
             fatalError("label is nil for key \(labelSpecifierKey)")
         }
         return textLabelSpecifier.label(withText: text)
     }
     
-    func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:@escaping (() -> ()), completion:@escaping ((_ finished: Bool) -> ())) {
+    public func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:@escaping (() -> ()), completion:@escaping ((_ finished: Bool) -> ())) {
         
         guard let animationSpecifier = self.animationSpecifier(forKey: animationSpecifierKey) else {
             fatalError("animation specifier is nil for key \(animationSpecifierKey)")
@@ -712,32 +712,32 @@ extension Theme {
     
 }
 
-class AnimationSpecifier {
-    var delay: TimeInterval = 0
-    var duration: TimeInterval = 0
-    var curve: UIViewAnimationOptions = .curveEaseInOut
+public class AnimationSpecifier {
+    public var delay: TimeInterval = 0
+    public var duration: TimeInterval = 0
+    public var curve: UIView.AnimationOptions = .curveEaseInOut
 }
 
-class ViewSpecifier {
-    var size = CGSize.zero
-    var position = CGPoint.zero
-    var backgroundColor: UIColor?
-    var highlightedBackgroundColor: UIColor?
+public class ViewSpecifier {
+    public var size = CGSize.zero
+    public var position = CGPoint.zero
+    public var backgroundColor: UIColor?
+    public var highlightedBackgroundColor: UIColor?
     
     /** Not used when creating a view \c -viewWithViewSpecifierKey:. How padding
      affect the view to be interpreted by interested party. */
-    var padding = UIEdgeInsets.zero
+    public var padding = UIEdgeInsets.zero
 }
 
-class NavigationBarSpecifier {
+public class NavigationBarSpecifier {
     
-    var translucent: Bool = false
-    var popoverBackgroundColor: UIColor?
-    var barColor: UIColor?
-    var tintColor: UIColor?
-    var titleLabelSpecifier: TextLabelSpecifier?
-    var buttonsLabelSpecifier: TextLabelSpecifier?
-    func apply(toNavigationBar navigationBar: UINavigationBar, containedInClass containingClass: UIAppearanceContainer.Type?) {
+    public var translucent: Bool = false
+    public var popoverBackgroundColor: UIColor?
+    public var barColor: UIColor?
+    public var tintColor: UIColor?
+    public var titleLabelSpecifier: TextLabelSpecifier?
+    public var buttonsLabelSpecifier: TextLabelSpecifier?
+    public func apply(toNavigationBar navigationBar: UINavigationBar, containedInClass containingClass: UIAppearanceContainer.Type?) {
         
         if let barColor = self.barColor {
             navigationBar.barTintColor = barColor
@@ -769,7 +769,7 @@ class NavigationBarSpecifier {
     }
 }
 
-class TextLabelSpecifier {
+public class TextLabelSpecifier {
     
     var font: UIFont?
     var size = CGSize.zero
@@ -921,7 +921,7 @@ class TextLabelSpecifier {
     }
 }
 
-class DashedBorderSpecifier {
+public class DashedBorderSpecifier {
     var lineWidth: Float = 0
     var color: UIColor?
     var cornerRadius: Float = 0
