@@ -517,10 +517,10 @@ public class Theme: Equatable {
         labelSpecifier.padding = self.edgeInsets(fromDictionary: edgeInsetsDictionary)
         
         let allAttributes = [
-            NSFontAttributeName,
-            NSForegroundColorAttributeName,
-            NSBackgroundColorAttributeName,
-            NSParagraphStyleAttributeName]
+            NSAttributedString.Key.font,
+            NSAttributedString.Key.foregroundColor,
+            NSAttributedString.Key.backgroundColor,
+            NSAttributedString.Key.paragraphStyle]
         labelSpecifier.attributes = labelSpecifier.attributes(forKeys: allAttributes)
         return labelSpecifier
     }
@@ -750,15 +750,15 @@ public class NavigationBarSpecifier {
         
         if let titleLabelSpecifier = self.titleLabelSpecifier {
             let attributes = titleLabelSpecifier.attributes(forKeys: [
-                NSFontAttributeName,
-                NSForegroundColorAttributeName])
+                NSAttributedString.Key.font,
+                NSAttributedString.Key.foregroundColor])
             navigationBar.titleTextAttributes = attributes
         }
         
         if let buttonsLabelSpecifier = self.buttonsLabelSpecifier {
             let attributes = buttonsLabelSpecifier.attributes(forKeys: [
-                NSFontAttributeName,
-                NSForegroundColorAttributeName])
+                NSAttributedString.Key.font,
+                NSAttributedString.Key.foregroundColor])
             if let containingClass = containingClass {
                 UIBarButtonItem.appearance(whenContainedInInstancesOf: [UINavigationBar.self, containingClass]).setTitleTextAttributes(attributes, for: .normal)
             }
@@ -799,7 +799,7 @@ public class TextLabelSpecifier {
     var padding: UIEdgeInsets?
     
     /** Attributes representing the font, color, backgroundColor, alignment and lineBreakMode */
-    var attributes: [String: Any]?
+    var attributes: [NSAttributedString.Key: Any]?
     
     func label(withText text: String) -> UILabel {
         let frame = CGRect(origin: self.position, size: self.size)
@@ -830,29 +830,29 @@ public class TextLabelSpecifier {
     
     func attributedString(withText text: String) -> NSAttributedString {
         let allAttributes = self.attributes(forKeys: [
-            NSFontAttributeName,
-            NSForegroundColorAttributeName,
-            NSBackgroundColorAttributeName,
-            NSParagraphStyleAttributeName])
+            NSAttributedString.Key.font,
+            NSAttributedString.Key.foregroundColor,
+            NSAttributedString.Key.backgroundColor,
+            NSAttributedString.Key.paragraphStyle])
         return self.attributedString(withText: text, attributes: allAttributes)
     }
     
-    func attributedString(withText text: String, attributes: [String: Any]) -> NSAttributedString {
+    func attributedString(withText text: String, attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
         let transformedText = self.transform(text: text)
         return NSAttributedString(string: transformedText, attributes: attributes)
     }
     
-    func fontAndColorAttributes() -> [String: Any] {
+    func fontAndColorAttributes() -> [NSAttributedString.Key: Any] {
         return self.attributes(forKeys: [
-            NSFontAttributeName,
-            NSForegroundColorAttributeName,
-            NSBackgroundColorAttributeName])
+            NSAttributedString.Key.font,
+            NSAttributedString.Key.foregroundColor,
+            NSAttributedString.Key.backgroundColor])
     }
     
-    func attributes(forKeys keys: [String]) -> [String: Any] {
-        var textAttributes: [String: Any] = [:]
+    func attributes(forKeys keys: [NSAttributedString.Key]) -> [NSAttributedString.Key: Any] {
+        var textAttributes: [NSAttributedString.Key: Any] = [:]
         for key in keys {
-            if key == NSParagraphStyleAttributeName {
+            if key == NSAttributedString.Key.paragraphStyle {
                 if let paragraphStyle = NSMutableParagraphStyle.default.mutableCopy() as? NSMutableParagraphStyle {
                     
                     paragraphStyle.lineBreakMode = self.lineBreakMode
@@ -873,17 +873,17 @@ public class TextLabelSpecifier {
                     textAttributes[key] = paragraphStyle
                 }
             }
-            else if key == NSFontAttributeName {
+            else if key == NSAttributedString.Key.font {
                 if let font = self.font {
                     textAttributes[key] = font
                 }
             }
-            else if key == NSForegroundColorAttributeName {
+            else if key == NSAttributedString.Key.foregroundColor {
                 if let color = self.color {
                     textAttributes[key] = color
                 }
             }
-            else if key == NSBackgroundColorAttributeName {
+            else if key == NSAttributedString.Key.backgroundColor {
                 if let backgroundColor = self.backgroundColor {
                     textAttributes[key] = backgroundColor
                 }
