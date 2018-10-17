@@ -253,8 +253,6 @@ public class Theme: Equatable {
             return font
         }
         return cachedFont
-        
-        
     }
     
     internal func font(fromDictionary dictionary: [String: Any]?, sizeAdjustment: Float) -> UIFont {
