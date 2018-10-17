@@ -76,7 +76,7 @@ extension Theme {
 
         let watchScreen = WatchScreen.currentScreen()
         var fontSize = CGFloat(self.float(fromObject: dictionary?[watchScreen.fontSizeKey]))
-        var weight = self.string(fromObject: dictionary?["weight"])
+        let weight = self.string(fromObject: dictionary?["weight"])
         
         if fontSize < 1.0 {
             fontSize = 15.0
