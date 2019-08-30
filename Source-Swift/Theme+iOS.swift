@@ -34,7 +34,7 @@ public extension Theme {
         return .curveEaseInOut
     }
     
-    public func animationSpecifier(forKey key: String) -> AnimationSpecifier? {
+    func animationSpecifier(forKey key: String) -> AnimationSpecifier? {
         let animationSpecifier = AnimationSpecifier()
         
         guard let animationDictionary = self.dictionary(forKey: key) else {
@@ -48,7 +48,7 @@ public extension Theme {
         return animationSpecifier
     }
     
-    public func statusBarStyle(forKey key: String) -> UIStatusBarStyle {
+    func statusBarStyle(forKey key: String) -> UIStatusBarStyle {
         let obj = self.object(forKey: key)
         return self.statusBarStyle(fromObject: obj)
     }
@@ -67,7 +67,7 @@ public extension Theme {
         return .default
     }
     
-    public func keyboardAppearance(forKey key: String) -> UIKeyboardAppearance {
+    func keyboardAppearance(forKey key: String) -> UIKeyboardAppearance {
         let obj = self.object(forKey: key)
         return self.keyboardAppearance(fromObject: obj)
     }
@@ -86,11 +86,11 @@ public extension Theme {
         return .default
     }
     
-    public func navigationBarSpecifier(forKey key: String) -> NavigationBarSpecifier? {
+    func navigationBarSpecifier(forKey key: String) -> NavigationBarSpecifier? {
         return self.navigationBarSpecifier(forKey: key, sizeAdjustment:0)
     }
     
-    public func navigationBarSpecifier(forKey key: String, sizeAdjustment: Float) -> NavigationBarSpecifier? {
+    func navigationBarSpecifier(forKey key: String, sizeAdjustment: Float) -> NavigationBarSpecifier? {
         guard let cachedSpecifier = self.navigationBarSpecifierCache.object(forKey: key as NSString) else {
             
             let navigationBarSpecifier = NavigationBarSpecifier()
@@ -124,11 +124,11 @@ public extension Theme {
         return cachedSpecifier
     }
     
-    public func textLabelSpecifier(forKey key: String) -> TextLabelSpecifier? {
+    func textLabelSpecifier(forKey key: String) -> TextLabelSpecifier? {
         return self.textLabelSpecifier(forKey: key, sizeAdjustment: 0)
     }
     
-    public func textLabelSpecifier(forKey key: String, sizeAdjustment: Float) -> TextLabelSpecifier? {
+    func textLabelSpecifier(forKey key: String, sizeAdjustment: Float) -> TextLabelSpecifier? {
         let cacheKey = key.appendingFormat("_%.2f", sizeAdjustment)
         guard let cachedSpecifier = self.textLabelSpecifierCache.object(forKey: cacheKey as NSString) else {
             let dictionary = self.dictionary(forKey: key)
@@ -141,7 +141,7 @@ public extension Theme {
         return cachedSpecifier
     }
     
-    public func textLabelSpecifier(fromDictionary dictionary: [String: Any]?, sizeAdjustment: Float) -> TextLabelSpecifier? {
+    func textLabelSpecifier(fromDictionary dictionary: [String: Any]?, sizeAdjustment: Float) -> TextLabelSpecifier? {
         
         guard let dictionary = dictionary else {
             return nil
@@ -209,7 +209,7 @@ public extension Theme {
         return labelSpecifier
     }
     
-    public func dashedBorderSpecifier(forKey key: String) -> DashedBorderSpecifier? {
+    func dashedBorderSpecifier(forKey key: String) -> DashedBorderSpecifier? {
         guard let dictionary = self.dictionary(fromObject: key) else {
             return nil
         }
@@ -231,7 +231,7 @@ public extension Theme {
         return dashedBorderSpecifier
     }
     
-    public func textAlignment(forKey key: String) -> NSTextAlignment {
+    func textAlignment(forKey key: String) -> NSTextAlignment {
         let obj = self.object(forKey: key)
         return self.textAlignment(fromObject: obj)
     }
@@ -256,7 +256,7 @@ public extension Theme {
         return .left
     }
     
-    public func lineBreakMode(forKey key: String) -> NSLineBreakMode {
+    func lineBreakMode(forKey key: String) -> NSLineBreakMode {
         let obj = self.object(forKey: key)
         return self.lineBreakMode(fromObject: obj)
     }
@@ -291,7 +291,7 @@ public extension Theme {
 
 public extension Theme {
     
-    public func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
+    func view(withViewSpecifierKey viewSpecifierKey: String) -> UIView {
         guard let viewSpecifier = self.viewSpecifier(forKey: viewSpecifierKey) else {
             fatalError("viewSpecifier is nil for key \(viewSpecifierKey)")
         }
@@ -301,18 +301,18 @@ public extension Theme {
         return view
     }
     
-    public func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel {
+    func label(withText text: String, specifierKey labelSpecifierKey: String) -> UILabel {
         return self.label(withText: text, specifierKey: labelSpecifierKey, sizeAdjustment: 0)
     }
     
-    public func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel {
+    func label(withText text: String, specifierKey labelSpecifierKey: String, sizeAdjustment: Float) -> UILabel {
         guard let textLabelSpecifier = self.textLabelSpecifier(forKey: labelSpecifierKey, sizeAdjustment: sizeAdjustment) else {
             fatalError("label is nil for key \(labelSpecifierKey)")
         }
         return textLabelSpecifier.label(withText: text)
     }
     
-    public func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:@escaping (() -> ()), completion:@escaping ((_ finished: Bool) -> ())) {
+    func animate(withAnimationSpecifierKey animationSpecifierKey: String, animations:@escaping (() -> ()), completion:@escaping ((_ finished: Bool) -> ())) {
         
         guard let animationSpecifier = self.animationSpecifier(forKey: animationSpecifierKey) else {
             fatalError("animation specifier is nil for key \(animationSpecifierKey)")
