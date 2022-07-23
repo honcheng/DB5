@@ -14,6 +14,8 @@ private enum WatchScreen {
     case s40mm
     case s42mm
     case s44mm
+    case s41mm
+    case s45mm
     case unknown
     
     private static func screen(with size: CGSize) -> WatchScreen {
@@ -23,11 +25,17 @@ private enum WatchScreen {
         else if size.equalTo(CGSize(width: 324/2, height: 394/2)) {
             return .s40mm
         }
+        else if size.equalTo(CGSize(width: 352/2, height: 430/2)) {
+            return .s41mm
+        }
         else if size.equalTo(CGSize(width: 312/2, height: 390/2)) {
             return .s42mm
         }
         else if size.equalTo(CGSize(width: 368/2, height: 448/2)) {
             return .s44mm
+        }
+        else if size.equalTo(CGSize(width: 396/2, height: 484/2)) {
+            return .s45mm
         }
         else {
             return .unknown
@@ -52,6 +60,10 @@ private enum WatchScreen {
                 return "size42mm"
             case .s44mm:
                 return "size44mm"
+            case .s41mm:
+                return "size41mm"
+            case .s45mm:
+                return "size45mm"
             default:
                 return "size"
             }
