@@ -161,6 +161,18 @@ public class Theme: Equatable {
         return object.floatValue
     }
     
+    public func double(forKey key:String) -> Double {
+        let obj = self.object(forKey: key)
+        return self.double(fromObject: obj)
+    }
+    
+    internal func double(fromObject object: Any?) -> Double {
+        guard let object = object as? NSNumber else {
+            return 0
+        }
+        return object.doubleValue
+    }
+    
     public func timeInterval(forKey key:String) -> TimeInterval {
         let obj = self.object(forKey: key)
         return self.timeInterval(fromObject: obj)
